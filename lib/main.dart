@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          if (login == false)
+          if (islogin == false)
             Padding(
               padding: EdgeInsetsGeometry.only(right: 10),
               child: ElevatedButton(
@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   if(result == true) {
                     setState(() {
-                      login = true;
+                      islogin = true;
                     });
                   }
                 },
@@ -82,9 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
-      endDrawer: login ?
+      endDrawer: islogin ?
       Drawer(
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.secondWhite,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -97,8 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
-                  tileColor: AppColors.secondWhite,
-                  textColor: AppColors.secondBlack,
+                  tileColor: AppColors.primaryGreen,
+                  textColor: AppColors.secondWhite,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadiusGeometry.circular(12)
                   ),
@@ -115,8 +115,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
-                  tileColor: AppColors.secondWhite,
-                  textColor: AppColors.secondBlack,
+                  tileColor: AppColors.primaryGreen,
+                  textColor: AppColors.secondWhite,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadiusGeometry.circular(12)
                   ),
@@ -133,8 +133,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
-                  tileColor: AppColors.secondWhite,
-                  textColor: AppColors.secondBlack,
+                  tileColor: AppColors.primaryGreen,
+                  textColor: AppColors.secondWhite,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadiusGeometry.circular(12)
                   ),
@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
 
-              SizedBox(height: 250),
+              SizedBox(height: 200),
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -153,13 +153,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
-                  tileColor: AppColors.secondWhite,
-                  textColor: AppColors.secondBlack,
+                  tileColor: AppColors.primaryGreen,
+                  textColor: AppColors.secondWhite,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadiusGeometry.circular(12)
                   ),
                   onTap: () {
-
+                    setState(() {
+                      islogin = false;
+                    });
+                    Navigator.pushAndRemoveUntil(
+                      context, 
+                      MaterialPageRoute(builder: (context) => MyHomePage()), 
+                      (Route<dynamic> route) => false,
+                    );
                   },
                 ),
               ),
@@ -322,10 +329,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                if (login == false) {
-                  login = true;
+                if (islogin == false) {
+                  islogin = true;
                 } else {
-                  login = false;
+                  islogin = false;
                 }
               });
             }, 

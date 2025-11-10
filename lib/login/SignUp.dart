@@ -29,7 +29,7 @@ class _SignUpState extends State<SignUp> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(30, 100, 30, 30),
+            padding: EdgeInsetsGeometry.fromLTRB(30, 50, 30, 30),
             child: Center(
               child: Text(
                 "Create Your First Account",

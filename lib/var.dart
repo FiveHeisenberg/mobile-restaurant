@@ -1,1 +1,1 @@
-  bool login = false;
+  bool islogin = false;

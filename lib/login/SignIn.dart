@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projek_mobile/login/SignUp.dart';
 import 'package:projek_mobile/main.dart';
+import 'package:projek_mobile/var.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const LoginPage());
@@ -15,6 +18,41 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _obscureText = true;
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> login() async {
+    final response = await http.post(
+      Uri.parse('http://localhost/login.php'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': _usernameController.text,
+        'password': _passwordController.text,
+      })
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['status'] == 'success') {
+        setState(() {
+          islogin = true;
+        });
+        Navigator.pushAndRemoveUntil(
+          context, 
+          MaterialPageRoute(builder: (context) => MyHomePage()),
+          (Route<dynamic> Route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Username atau Password Salah'))
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal Koneksi ke Server"))
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                 fillColor: AppColors.thirdGreen,
                 filled: true,
               ),
+              controller: _usernameController,
             ),
           ),
           
@@ -94,6 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                 fillColor: AppColors.thirdGreen,
                 filled: true,
               ),
+              controller: _passwordController,
             ),
           ),
 
@@ -121,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Center(
               child: ElevatedButton(
                 onPressed: () {
-
+                  login();
                 }, 
                 child: Text(
                   "Login",

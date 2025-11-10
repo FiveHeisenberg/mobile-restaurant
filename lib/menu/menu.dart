@@ -35,7 +35,8 @@ class _MenuState extends State<Menu> {
           child: Column(
             children: [
               SizedBox(height: 200),
-              if (login)
+
+              if (islogin)
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
                 child: ListTile(
@@ -54,7 +55,8 @@ class _MenuState extends State<Menu> {
                   },
                 ),
               ),
-              if (login)
+
+              if (islogin)
               Padding(
                   padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -73,7 +75,8 @@ class _MenuState extends State<Menu> {
                   },
                 ),
               ),
-              if(login)
+
+              if(islogin)
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -92,9 +95,10 @@ class _MenuState extends State<Menu> {
                   },
                 ),
               ),
-              if (login)
+              
+              if (islogin)
               SizedBox(height: 250),
-              login ? 
+              islogin ? 
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -110,7 +114,7 @@ class _MenuState extends State<Menu> {
                   ),
                   onTap: () {
                     setState(() {
-                      login = false;
+                      islogin = false;
                     });
                     Navigator.pushAndRemoveUntil(
                       context, 
