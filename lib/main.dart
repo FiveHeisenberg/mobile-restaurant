@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+  // Template Warna
 class AppColors {
   static const Color primaryGreen = Color(0xFF4AA433);
   static const Color secondBlack = Color(0xFF000000);
@@ -36,7 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
   bool login = false;
   String query = '';
   
-
   @override
   Widget build(BuildContext context) {
     // final screenWidth = MediaQuery.of(context).size.width;
@@ -192,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
 
           Padding(
-            padding: const EdgeInsets.fromLTRB(5, 0, 5, 20),
+            padding: const EdgeInsets.fromLTRB(15, 0, 5, 20),
             child: Text(
               "Mau Pesan Apa Hari Ini?",
               style: TextStyle(
@@ -248,9 +248,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
 
           SizedBox(height: 20),
-
           Padding(
-            padding: const EdgeInsets.fromLTRB(5, 0, 5, 20),
+            padding: const EdgeInsets.fromLTRB(15, 0, 5, 10),
             child: Text(
               "Promo Terbaru Dari Kami",
               style: TextStyle(
@@ -261,8 +260,47 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
 
           Container(
-            child: Image.asset("img/banner1.png"),
-            padding: EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsetsGeometry.fromLTRB(20, 0, 20, 5),
+                  child: ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(10),
+                    child: Image.asset(
+                      "img/promo1.png"
+                    ),
+                  )
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsetsGeometry.fromLTRB(20, 5, 5, 10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadiusGeometry.circular(10),
+                          child: Image.asset(
+                            "img/promo0.jpg",
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsetsGeometry.fromLTRB(5, 5, 20, 10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadiusGeometry.circular(10),
+                          child: Image.asset(
+                            "img/promo2.jpg",
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    )
+                  ],
+                )
+              ],
+            )
           ),
 
           ElevatedButton(
