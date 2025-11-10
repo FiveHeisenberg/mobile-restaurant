@@ -3,6 +3,8 @@ import 'package:carousel_slider/carousel_slider.dart' as cslider;
 import 'package:projek_mobile/login/SignIn.dart';
 import 'package:projek_mobile/menu/menu.dart';
 import 'package:projek_mobile/var.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 
 void main() {
@@ -37,21 +39,50 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String query = '';
+  String displayedUsername = username;
+
+  Future<void> fetchUsername() async {
+    try {
+      final response = await http.post(
+        Uri.parse("http://localhost/login.php"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'username': username}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['status'] == 'success') {
+          setState(() {
+            displayedUsername = data['username'];
+          });
+        }
+      }
+    } catch (e) {
+      print("Error");
+    }
+  }
   
   @override
+  void initState() {
+    super.initState();
+    fetchUsername();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
-    // final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.secondWhite,
 
       appBar: AppBar(
         backgroundColor: AppColors.secondWhite,
         title: Text(
-          "Selamat Datang",
+          isLogin ?
+          "Halo, $displayedUsername":"Selamat Datang",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          if (islogin == false)
+          if (isLogin == false)
             Padding(
               padding: EdgeInsetsGeometry.only(right: 10),
               child: ElevatedButton(
@@ -63,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   if(result == true) {
                     setState(() {
-                      islogin = true;
+                      isLogin = true;
                     });
                   }
                 },
@@ -82,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
-      endDrawer: islogin ?
+      endDrawer: isLogin ?
       Drawer(
         backgroundColor: AppColors.secondWhite,
         child: SingleChildScrollView(
@@ -160,7 +191,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   onTap: () {
                     setState(() {
-                      islogin = false;
+                      isLogin = false;
+                      username = '';
                     });
                     Navigator.pushAndRemoveUntil(
                       context, 
@@ -329,10 +361,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                if (islogin == false) {
-                  islogin = true;
+                if (isLogin == false) {
+                  isLogin = true;
                 } else {
-                  islogin = false;
+                  isLogin = false;
                 }
               });
             }, 

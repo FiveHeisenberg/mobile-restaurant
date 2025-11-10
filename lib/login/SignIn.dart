@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projek_mobile/login/SignUp.dart';
 import 'package:projek_mobile/main.dart';
-import 'package:projek_mobile/var.dart';
+import 'package:projek_mobile/var.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -35,7 +35,8 @@ class _LoginPageState extends State<LoginPage> {
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
         setState(() {
-          islogin = true;
+          globals.isLogin = true;
+          globals.username = data['username'];
         });
         Navigator.pushAndRemoveUntil(
           context, 

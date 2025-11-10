@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
-import 'package:projek_mobile/var.dart';
+import 'package:projek_mobile/var.dart' as globals;
 import 'package:projek_mobile/login/Signin.dart';
 
 void main() {
@@ -15,6 +15,7 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +37,7 @@ class _MenuState extends State<Menu> {
             children: [
               SizedBox(height: 200),
 
-              if (islogin)
+              if (globals.isLogin)
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
                 child: ListTile(
@@ -56,7 +57,7 @@ class _MenuState extends State<Menu> {
                 ),
               ),
 
-              if (islogin)
+              if (globals.isLogin)
               Padding(
                   padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -76,7 +77,7 @@ class _MenuState extends State<Menu> {
                 ),
               ),
 
-              if(islogin)
+              if(globals.isLogin)
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -96,9 +97,9 @@ class _MenuState extends State<Menu> {
                 ),
               ),
               
-              if (islogin)
+              if (globals.isLogin)
               SizedBox(height: 250),
-              islogin ? 
+              globals.isLogin ? 
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -113,14 +114,7 @@ class _MenuState extends State<Menu> {
                     borderRadius: BorderRadius.circular(12)
                   ),
                   onTap: () {
-                    setState(() {
-                      islogin = false;
-                    });
-                    Navigator.pushAndRemoveUntil(
-                      context, 
-                      MaterialPageRoute(builder: (context) => MyHomePage()), 
-                      (Route<dynamic> route) => false,
-                    );
+                    globals.logout(context);
                   },
                 ),
               ) : 
