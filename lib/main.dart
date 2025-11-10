@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart' as cslider;
 import 'package:projek_mobile/login/SignIn.dart';
+import 'package:projek_mobile/menu/menu.dart';
+import 'package:projek_mobile/var.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Selamat Datang'),
+      home: const MyHomePage(),
     );
   }
 }
@@ -25,8 +28,7 @@ class AppColors {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+  const MyHomePage({super.key});
   
 
   @override
@@ -34,7 +36,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool login = false;
   String query = '';
   
   @override
@@ -42,10 +43,11 @@ class _MyHomePageState extends State<MyHomePage> {
     // final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.secondWhite,
+
       appBar: AppBar(
         backgroundColor: AppColors.secondWhite,
         title: Text(
-          widget.title,
+          "Selamat Datang",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -214,7 +216,10 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => Menu())
+                  );
                 }, 
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryGreen,
@@ -235,7 +240,10 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
-
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => Menu())
+                  );
                 }, 
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryGreen,
