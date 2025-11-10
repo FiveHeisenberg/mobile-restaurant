@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart' as cslider;
+import 'package:projek_mobile/login/SignIn.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-  // Template Warna
 class AppColors {
   static const Color primaryGreen = Color(0xFF4AA433);
   static const Color secondBlack = Color(0xFF000000);
@@ -53,10 +53,17 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: EdgeInsetsGeometry.only(right: 10),
               child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    login = true;
-                  });
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+
+                  if(result == true) {
+                    setState(() {
+                      login = true;
+                    });
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryGreen,
@@ -224,6 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 )
               ),
+              
               SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
