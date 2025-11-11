@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const SignUp());
@@ -14,6 +16,64 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   bool _obscureText = true;
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmController = TextEditingController();
+
+  Future<void> createAccount() async {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirm = _confirmController.text.trim();
+
+    if (username.isEmpty || password.isEmpty || confirm.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Semua field harus diisi!"))
+      );
+      return;
+    }
+
+    if (password != confirm) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Password tidak cocok!"))
+      );
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse("http://localhost/register.php"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "username": username,
+          "password": password,
+        })
+      );
+
+      if (response.statusCode == 200) {
+        print(response.body);
+        final data = jsonDecode(response.body);
+        if (data['status'] == 'success') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Akun Berhasil dibuat!"))
+          );
+          Navigator.pop(context);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(data['message'] ?? "Gagal Membuat akun"))
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Server Error: ${response.statusCode}"))
+        );
+      }
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Terjadi kesalahan: $e"))
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +120,7 @@ class _SignUpState extends State<SignUp> {
                 fillColor: AppColors.thirdGreen,
                 filled: true,
               ),
+              controller: _usernameController,
             ),
           ),
           
@@ -94,6 +155,7 @@ class _SignUpState extends State<SignUp> {
                 fillColor: AppColors.thirdGreen,
                 filled: true,
               ),
+              controller: _passwordController,
             ),
           ),
 
@@ -128,6 +190,7 @@ class _SignUpState extends State<SignUp> {
                 fillColor: AppColors.thirdGreen,
                 filled: true,
               ),
+              controller: _confirmController,
             ),
           ),
 
@@ -151,9 +214,7 @@ class _SignUpState extends State<SignUp> {
             padding: EdgeInsetsGeometry.fromLTRB(50, 20, 50, 50),
             child: Center(
               child: ElevatedButton(
-                onPressed: () {
-
-                }, 
+                onPressed: createAccount, 
                 child: Text(
                   "Create Account",
                   style: TextStyle(
