@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       home: const MyHomePage(),
     );
@@ -257,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => Menu())
+                    MaterialPageRoute(builder: (context) => Menu(idKategori: 1))
                   );
                 }, 
                 style: ElevatedButton.styleFrom(
@@ -281,7 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => Menu())
+                    MaterialPageRoute(builder: (context) => Menu(idKategori: 2))
                   );
                 }, 
                 style: ElevatedButton.styleFrom(
