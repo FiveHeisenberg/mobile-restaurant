@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  intl: ^0.19.0
   carousel_slider: 
     git:
       url: https://github.com/serenader2014/flutter_carousel_slider.git

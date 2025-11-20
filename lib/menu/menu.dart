@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:projek_mobile/var.dart' as globals;
 import 'package:projek_mobile/login/Signin.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class Menu extends StatefulWidget {
   final int idKategori;
@@ -15,6 +15,7 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  final formatter = NumberFormat('#,###', 'id_ID');
   List produk = [];
 
   Future getProdukByKategori() async {
@@ -59,6 +60,7 @@ class _MenuState extends State<Menu> {
         ),
       ),
 
+      // DRAWER
       endDrawer: Drawer(
         backgroundColor: AppColors.primaryGreen,
         child: SingleChildScrollView(
@@ -175,6 +177,8 @@ class _MenuState extends State<Menu> {
 
       body: Column(
         children: [
+
+          // SEARCH BAR
           Padding(
             padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: TextField(
@@ -191,6 +195,7 @@ class _MenuState extends State<Menu> {
             ),
           ),
 
+          // TULISAN HEADER (Makanan /  Minuman)
           Align(
             alignment: Alignment.centerLeft,
             child: Column(
@@ -239,7 +244,7 @@ class _MenuState extends State<Menu> {
 
                                 // HARGA
                                 Text(
-                                  "Rp. ${produk[index]['harga']},-",
+                                  "Rp, ${formatter.format(produk[index]['harga'])},-",
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: Colors.black87,
@@ -294,6 +299,7 @@ class _MenuState extends State<Menu> {
                               ),
                               SizedBox(height: 10),
 
+                              // Tombol ADD
                               SizedBox(
                                 width: 90,
                                 child: ElevatedButton(
@@ -301,12 +307,14 @@ class _MenuState extends State<Menu> {
                                     backgroundColor: AppColors.primaryGreen,
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(8))
                                   ),
-                                  onPressed: () {
-                                
-                                  }, 
+                                  onPressed: produk[index]['status'] == 'Tersedia'
+                                  ? () {
+
+                                  }
+                                  : null,
                                   child: Center(
                                     child: Text(
-                                      "ADD",
+                                      produk[index]['status'] ==  "Tersedia" ? "ADD" : "Habis",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
