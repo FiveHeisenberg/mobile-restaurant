@@ -43,11 +43,19 @@ class _MenuState extends State<Menu> {
 
       appBar: AppBar(
         title: Text(
-          "Makan Apa Hari ini, ${globals.username}",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20
-          ),
+          () {
+            if (globals.isLogin == false) {
+              return "Selamat Datang";
+            } else {
+              if (widget.idKategori == 1) {
+                return "Makan apa hari ini, ${globals.username}?";
+              } else if (widget.idKategori == 2) {
+                return "Mau Minum apa, ${globals.username}?";
+              } else {
+                return "Kategori Tidak Dikenal";
+              }
+            }
+          }(),
         ),
       ),
 
@@ -171,7 +179,7 @@ class _MenuState extends State<Menu> {
             padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'Nasi Goreng . . .',
+                hintText: widget.idKategori == 1 ? "Nasi Goreng..." : "Teh Dingin...",
                 hintStyle: TextStyle(color: AppColors.secondBlack),
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
@@ -183,18 +191,143 @@ class _MenuState extends State<Menu> {
             ),
           ),
 
-          // 🔥 LISTVIEW HARUS DI DALAM EXPANDED
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsetsGeometry.fromLTRB(12, 20, 0, 0),
+                  child: Text(
+                    widget.idKategori == 1 ? "Makanan" : "Minuman", //widget.idKategori apakah 1? kalo iya makanan, kalo engga, Minuman
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+
+          // LISTVIEW HARUS DI DALAM EXPANDED
           Expanded(
             child: ListView.builder(
               itemCount: produk.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(produk[index]['nama_produk']),
-                  subtitle: Text("${produk[index]['harga']}"),
+                return Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          // BAGIAN KIRI
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // NAMA PRODUK
+                                Text(
+                                  produk[index]['nama_produk'],
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+
+                                // HARGA
+                                Text(
+                                  "Rp. ${produk[index]['harga']},-",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+
+                                // RATING (STATIC)
+                                Row(
+                                  children: List.generate(5, (i) {
+                                    return Icon(
+                                      Icons.star,
+                                      size: 18,
+                                      color: Colors.amber,
+                                    );
+                                  }),
+                                ),
+                                SizedBox(height: 6),
+
+                                // DESKRIPSI PRODUK
+                                Text(
+                                  produk[index]['deskripsi'] ?? "",
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 10),
+
+                          //  BAGIAN KANAN (GAMBAR + ADD)
+                          Column(
+                            children: [
+                              // GAMBAR
+                              Container(
+                                width: 90,
+                                height: 90,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[400],
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: produk[index]['path_gambar'] != null
+                                      ? DecorationImage(
+                                          image: NetworkImage(
+                                            "http://localhost${produk[index]['path_gambar'].replaceAll('\\', '/')}",
+                                          ),
+                                          fit: BoxFit.cover,
+                                        )
+                                      : null,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+
+                              SizedBox(
+                                width: 90,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primaryGreen,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(8))
+                                  ),
+                                  onPressed: () {
+                                
+                                  }, 
+                                  child: Center(
+                                    child: Text(
+                                      "ADD",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  )
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // GARIS PEMBATAS
+                    Divider(),
+                  ],
                 );
               },
             ),
-          ),
+          )
         ],
       )
     );
