@@ -67,7 +67,7 @@ class _MenuState extends State<Menu> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 200),
+              SizedBox(height: 150),
 
               if (globals.isLogin)
               Padding(
@@ -128,12 +128,32 @@ class _MenuState extends State<Menu> {
                   },
                 ),
               ),
-              
-              if (globals.isLogin)
-              SizedBox(height: 250),
-              globals.isLogin ? 
+
+              if (globals.username == "admin" )
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
+                child: ListTile(
+                  title: Text(
+                    "Dashboard",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  tileColor: AppColors.secondWhite,
+                  textColor: AppColors.secondBlack,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(12)
+                  ),
+                  onTap: () {
+
+                  },
+                ),
+              ),
+              
+              
+            if (globals.isLogin == true)
+              SizedBox(height: 200),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
                   title: Text(
                     "Logout",
@@ -143,13 +163,15 @@ class _MenuState extends State<Menu> {
                   tileColor: AppColors.secondWhite,
                   textColor: AppColors.secondBlack,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   onTap: () {
                     globals.logout(context);
                   },
                 ),
-              ) : 
+              ),
+
+              if (globals.isLogin == false)            
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -170,7 +192,8 @@ class _MenuState extends State<Menu> {
                     );
                   },
                 ),
-              )              
+              ),
+
             ],
           ),
         ),

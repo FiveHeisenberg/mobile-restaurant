@@ -124,9 +124,9 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 200),
+              SizedBox(height: 150),
               Padding(
-                padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
+                padding: EdgeInsetsGeometry.fromLTRB(20, 0, 20, 5),
                 child: ListTile(
                   title: Text(
                     "Profiles",
@@ -179,6 +179,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               ),
+
+              username == "admin" 
+              ? Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
+                child: ListTile(
+                  title: Text(
+                    "Dashboard",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  tileColor: AppColors.primaryGreen,
+                  textColor: AppColors.secondWhite,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(12)
+                  ),
+                  onTap: () {
+
+                  },
+                ),
+              ) : SizedBox.shrink(), // < --- WIDGET KOSONG
 
               SizedBox(height: 200),
               Padding(
