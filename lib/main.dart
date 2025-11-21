@@ -6,7 +6,6 @@ import 'package:projek_mobile/var.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -23,6 +22,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// TEMPLATE WARNA
 class AppColors {
   static const Color primaryGreen = Color(0xFF4AA433);
   static const Color secondBlack = Color(0xFF000000);
@@ -42,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String query = '';
   String displayedUsername = username;
 
+  // FUNGSI AMBIL USERNAME DARI API
   Future<void> fetchUsername() async {
     try {
       final response = await http.post(
@@ -82,6 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
           "Halo, $displayedUsername":"Selamat Datang",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+
+        // TOMBOL LOGIN
         actions: [
           if (isLogin == false)
             Padding(
@@ -114,6 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
+      // DRAWER
       endDrawer: isLogin ?
       Drawer(
         backgroundColor: AppColors.secondWhite,
@@ -210,6 +214,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
       body: ListView(
         children: [
+
+          // SEARCH BAR
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(15, 15, 15, 0),
             child: TextField(
@@ -225,6 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
 
+          // SLIDES BANNER PROMO
           cslider.CarouselSlider(
             items: [
               Image.asset("img/banner1.png", fit: BoxFit.contain),
@@ -254,6 +261,8 @@ class _MyHomePageState extends State<MyHomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+
+              // TOMBOL MENU MAKANAN
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -277,6 +286,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ),
 
+              // TOMBOL MENU MINUMAN
               SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
@@ -315,6 +325,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
 
+          // GAMBAR PROMO - PROMO
           Container(
             child: Column(
               children: [
@@ -376,4 +387,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-

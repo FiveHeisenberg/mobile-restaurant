@@ -18,6 +18,7 @@ class _MenuState extends State<Menu> {
   final formatter = NumberFormat('#,###', 'id_ID');
   List produk = [];
 
+  // FUNGSI API MENGAMBIL PRODUK BERDASARKAN KATEGORI
   Future getProdukByKategori() async {
     final response = await http.get(
       Uri.parse('http://localhost/menu.php?id_kategori=${widget.idKategori}')

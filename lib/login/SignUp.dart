@@ -20,6 +20,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
+  // FUNGSI API MEMBUAT AKUN
   Future<void> createAccount() async {
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
@@ -101,6 +102,7 @@ class _SignUpState extends State<SignUp> {
             )
           ),
 
+          // INPUT USERNAME
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
             child: TextFormField(
@@ -124,6 +126,7 @@ class _SignUpState extends State<SignUp> {
             ),
           ),
           
+          // INPUT PASSWORD
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
             child: TextFormField(
@@ -159,6 +162,7 @@ class _SignUpState extends State<SignUp> {
             ),
           ),
 
+          // INPUT PASSWORD AGAIN
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
             child: TextFormField(

@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // FUNGSI API LOGIN
   Future<void> login() async {
     final response = await http.post(
       Uri.parse('http://localhost/login.php'),
@@ -138,6 +139,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
 
+          // KE REGISTER
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(20, 5, 0, 1),
             child: InkWell(
@@ -157,6 +159,7 @@ class _LoginPageState extends State<LoginPage> {
             )
           ),
 
+          // TOMBOL LOGIN
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(50, 20, 50, 50),
             child: Center(
