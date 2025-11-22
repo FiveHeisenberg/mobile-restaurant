@@ -42,6 +42,21 @@ class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          
+        },
+        child: Icon(
+          Icons.shopping_cart,
+          color: AppColors.secondWhite,
+        ),
+        backgroundColor: AppColors.primaryGreen,
+        elevation: 0,
+        highlightElevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(16)
+        ),
+      ),
 
       appBar: AppBar(
         title: Text(
@@ -75,26 +90,6 @@ class _MenuState extends State<Menu> {
                 child: ListTile(
                   title: Text(
                     "Profiles",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  tileColor: AppColors.secondWhite,
-                  textColor: AppColors.secondBlack,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(12)
-                  ),
-                  onTap: () {
-
-                  },
-                ),
-              ),
-
-              if (globals.isLogin)
-              Padding(
-                  padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
-                child: ListTile(
-                  title: Text(
-                    "Keranjang",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
@@ -148,7 +143,6 @@ class _MenuState extends State<Menu> {
                   },
                 ),
               ),
-              
               
             if (globals.isLogin == true)
               SizedBox(height: 200),
@@ -359,7 +353,7 @@ class _MenuState extends State<Menu> {
                 );
               },
             ),
-          )
+          ),
         ],
       )
     );
