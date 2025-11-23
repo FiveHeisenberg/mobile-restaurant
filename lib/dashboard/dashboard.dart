@@ -18,7 +18,7 @@ class _DashboardState extends State<Dashboard> {
   Future<void> getProdukSoldOut() async {
     try {
       final response = await http.get(
-        Uri.parse("http://localhost/menu.php?status=Habis") 
+        Uri.parse("http://localhost/resto/menu.php?status=Habis") 
       );
 
       if (response.statusCode == 200) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projek_mobile/main.dart'; // pastikan arah import sesuai dengan struktur proyekmu
+import 'package:projek_mobile/main.dart'; 
 
 bool isLogin = false;
 String username = '';

@@ -42,7 +42,7 @@ class _SignUpState extends State<SignUp> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://localhost/register.php"),
+        Uri.parse("http://localhost/resto/register.php"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "username": username,

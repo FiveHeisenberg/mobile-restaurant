@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   // FUNGSI API LOGIN
   Future<void> login() async {
     final response = await http.post(
-      Uri.parse('http://localhost/login.php'),
+      Uri.parse('http://localhost/resto/login.php'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'username': _usernameController.text,

@@ -22,7 +22,7 @@ class _MenuState extends State<Menu> {
   // FUNGSI API MENGAMBIL PRODUK BERDASARKAN KATEGORI
   Future getProdukByKategori() async {
     final response = await http.get(
-      Uri.parse('http://localhost/menu.php?id_kategori=${widget.idKategori}')
+      Uri.parse('http://localhost/resto/menu.php?id_kategori=${widget.idKategori}')
     );
 
     if (response.statusCode == 200) {

@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> fetchUsername() async {
     try {
       final response = await http.post(
-        Uri.parse("http://localhost/login.php"),
+        Uri.parse("http://localhost/resto/login.php"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'username': username}),
       );
