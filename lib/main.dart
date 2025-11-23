@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart' as cslider;
+import 'package:projek_mobile/dashboard/dashboard.dart';
 import 'package:projek_mobile/login/SignIn.dart';
 import 'package:projek_mobile/menu/menu.dart';
 import 'package:projek_mobile/var.dart';
@@ -195,7 +196,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     borderRadius: BorderRadiusGeometry.circular(12)
                   ),
                   onTap: () {
-
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => Dashboard())
+                    );
                   },
                 ),
               ) : SizedBox.shrink(), // < --- WIDGET KOSONG

@@ -5,6 +5,7 @@ import 'package:projek_mobile/var.dart' as globals;
 import 'package:projek_mobile/login/Signin.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:projek_mobile/dashboard/dashboard.dart';
 
 class Menu extends StatefulWidget {
   final int idKategori;
@@ -139,13 +140,18 @@ class _MenuState extends State<Menu> {
                     borderRadius: BorderRadiusGeometry.circular(12)
                   ),
                   onTap: () {
-
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => Dashboard())
+                    );
                   },
                 ),
               ),
               
-            if (globals.isLogin == true)
-              SizedBox(height: 200),
+              if (globals.isLogin == true) 
+              SizedBox(height: 250),
+              
+              if (globals.isLogin == true)
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -254,7 +260,7 @@ class _MenuState extends State<Menu> {
                                 Text(
                                   produk[index]['nama_produk'],
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -295,7 +301,7 @@ class _MenuState extends State<Menu> {
                           ),
                           SizedBox(width: 10),
 
-                          //  BAGIAN KANAN (GAMBAR + ADD)
+                          //  BAGIAN KANAN (GAMBAR + PESAN)
                           Column(
                             children: [
                               // GAMBAR
@@ -317,7 +323,7 @@ class _MenuState extends State<Menu> {
                               ),
                               SizedBox(height: 10),
 
-                              // Tombol ADD
+                              // Tombol PESAN
                               SizedBox(
                                 width: 90,
                                 child: ElevatedButton(
@@ -332,7 +338,7 @@ class _MenuState extends State<Menu> {
                                   : null,
                                   child: Center(
                                     child: Text(
-                                      produk[index]['status'] ==  "Tersedia" ? "ADD" : "Habis",
+                                      produk[index]['status'] ==  "Tersedia" ? "Pesan" : "Habis",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -348,7 +354,10 @@ class _MenuState extends State<Menu> {
                     ),
 
                     // GARIS PEMBATAS
-                    Divider(),
+                    Divider(
+                      indent: 10,
+                      endIndent: 10,
+                    ),
                   ],
                 );
               },
