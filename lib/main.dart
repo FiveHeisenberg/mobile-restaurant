@@ -81,8 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: AppColors.secondWhite,
         title: Text(
           isLogin ?
-          "Halo, $displayedUsername":"Selamat Datang",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          "Hi, $displayedUsername":"Selamat Datang",
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
 
         // TOMBOL LOGIN
@@ -392,19 +392,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ],
             )
-          ),
-
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                if (isLogin == false) {
-                  isLogin = true;
-                } else {
-                  isLogin = false;
-                }
-              });
-            }, 
-            child: Text("RESET")
           ),
         ],
       ),

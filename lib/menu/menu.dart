@@ -43,6 +43,8 @@ class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      // TOMBOL KERANJANG
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           
@@ -74,6 +76,10 @@ class _MenuState extends State<Menu> {
               }
             }
           }(),
+
+          style: TextStyle(
+            fontWeight: FontWeight.w600
+          ),
         ),
       ),
 
@@ -268,7 +274,7 @@ class _MenuState extends State<Menu> {
 
                                 // HARGA
                                 Text(
-                                  "Rp, ${formatter.format(produk[index]['harga'])},-",
+                                  "Rp. ${formatter.format(produk[index]['harga'])},-",
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: Colors.black87,
