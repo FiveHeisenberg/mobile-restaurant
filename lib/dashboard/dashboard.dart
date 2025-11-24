@@ -4,6 +4,7 @@ import 'package:projek_mobile/main.dart';
 import 'package:projek_mobile/var.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:projek_mobile/dashboard/manage_stock.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -16,6 +17,8 @@ class _DashboardState extends State<Dashboard> {
   List produk = [];
   int totalIncome = 0;
   int totalSold = 0;
+  List produkData = [];
+  bool isLoading = false;
 
   // FORMATER RUPIAH
   final rupiah = NumberFormat.currency(
@@ -72,12 +75,20 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  // FUNGSI REFRESH DASHBOARD JIKA ADA PERUBAHAN
+  Future<void> refreshDashboard() async {
+    await getProdukSoldOut();
+    await getIncome();
+    await getTotalSold();
+  }
+
   @override
   void initState() {
     super.initState();
     getProdukSoldOut();
     getIncome();
     getTotalSold();
+    refreshDashboard();
   }
 
   @override
@@ -140,7 +151,14 @@ class _DashboardState extends State<Dashboard> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
-                  onTap: () {},
+                  onTap: () async {
+                    await Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => ManageStock())
+                    );
+                    
+                    refreshDashboard();
+                  },
                   tileColor: AppColors.secondWhite,
                   textColor: AppColors.secondBlack,
                   shape: RoundedRectangleBorder(
