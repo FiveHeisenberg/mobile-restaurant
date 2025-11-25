@@ -5,6 +5,7 @@ import 'package:projek_mobile/var.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:projek_mobile/dashboard/manage_stock.dart';
+import 'package:projek_mobile/dashboard/manage_produk.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -115,7 +116,12 @@ class _DashboardState extends State<Dashboard> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => manageProduk())
+                    );
+                  },
                   tileColor: AppColors.secondWhite,
                   textColor: AppColors.secondBlack,
                   shape: RoundedRectangleBorder(
@@ -258,7 +264,8 @@ class _DashboardState extends State<Dashboard> {
                 // PRODUK TERJUAL
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(20),
+                    height: 120,
+                    padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(
                       color: AppColors.primaryGreen,
                       borderRadius: BorderRadius.circular(20),
@@ -274,7 +281,6 @@ class _DashboardState extends State<Dashboard> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 10),
                         Text(
                           "$totalSold",
                           style: TextStyle(
@@ -292,7 +298,8 @@ class _DashboardState extends State<Dashboard> {
                 SizedBox(width: 15),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(20),
+                    height: 120,
+                    padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(
                       color: AppColors.primaryGreen,
                       borderRadius: BorderRadius.circular(20),
@@ -308,7 +315,6 @@ class _DashboardState extends State<Dashboard> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 10),
                         Text(
                           "${produk.length}",
                           style: TextStyle(

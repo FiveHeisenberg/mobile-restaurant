@@ -34,7 +34,6 @@ class AppColors {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
   
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -85,8 +84,32 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
 
-        // TOMBOL LOGIN
         actions: [
+
+          // TOMBOL HAMBURGER DRAWER
+          if(isLogin == true)
+          Builder(
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => Scaffold.of(context).openEndDrawer(),
+                child: Container(
+                  margin: EdgeInsets.only(right: 15),
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryGreen,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.menu,
+                    color: AppColors.secondWhite,
+                    size: 20,
+                  ),
+                ),
+              );
+            }
+          ),
+
+          // TOMBOL LOGIN
           if (isLogin == false)
             Padding(
               padding: EdgeInsetsGeometry.only(right: 10),

@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:projek_mobile/dashboard/addedit_produk.dart';
 
-class ManageStock extends StatefulWidget {
-  const ManageStock({super.key});
+
+class manageProduk extends StatefulWidget {
+  const manageProduk({super.key});
 
   @override
-  State<ManageStock> createState() => _ManageStockState();
+  State<manageProduk> createState() => _manageProdukState();
 }
 
-class _ManageStockState extends State<ManageStock> {
-  late Future<List> _futureProduk = fetchProduk(); 
+class _manageProdukState extends State<manageProduk> {
   String selectedKategori = "Semua";
+  late Future<List> _futureProduk;
 
   // FUNGSI API MENGAMBIL DATA PRODUK
   Future<List> fetchProduk() async {
@@ -29,21 +31,6 @@ class _ManageStockState extends State<ManageStock> {
     }
   }
 
-  // FUNGSI API UPDATE STATUS PRODUK
-  Future<void> updateStatus(int idProduk, bool tersedia) async {
-    final response = await http.post(
-      Uri.parse("http://localhost/resto/update_status.php"),
-      body: {
-        "id_produk": idProduk.toString(),
-        "status": tersedia ? "Tersedia" : "Habis",
-      }
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception("Gagal update status");
-    }
-  } 
-
   // FUNGSI FILTER PRODUK BERDASARKAN KATEGORI
   List getFilteredProduk(List allProduk) {
     if (selectedKategori == "Semua") {
@@ -55,20 +42,42 @@ class _ManageStockState extends State<ManageStock> {
   @override
   void initState() {
     super.initState();
+    _futureProduk = fetchProduk();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Manajemen Stok Menu"),
+        title: Text("Manajemen Produk"),
+      ),
+
+      // TOMBOL TAMBAH PRODUK
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await Navigator.push(
+            context, 
+            MaterialPageRoute(builder: (context) => AddEditProductPage()),
+          );
+          if (result == true) {
+            setState(() {
+              initState();
+            });
+          }
+        },
+        backgroundColor: AppColors.primaryGreen,
+        child: Icon(
+          Icons.add,
+          color: AppColors.secondWhite,
+          size: 32,
+        ),
       ),
 
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
+            
             // SEARCH BAR
             Padding(
               padding: EdgeInsets.fromLTRB(15, 15, 15, 20),
@@ -99,7 +108,8 @@ class _ManageStockState extends State<ManageStock> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: selectedKategori == "Semua"
                     ? Colors.grey
-                    : AppColors.primaryGreen,                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    : AppColors.primaryGreen,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)
                     )
@@ -114,7 +124,7 @@ class _ManageStockState extends State<ManageStock> {
                 ),
 
                 // TOMBOL MENU MAKANAN
-                SizedBox(width: 20),
+                SizedBox(width: 15),
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
@@ -140,7 +150,7 @@ class _ManageStockState extends State<ManageStock> {
                 ),
 
                 // TOMBOL MENU MINUMAN
-                SizedBox(width: 20),
+                SizedBox(width: 15),
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
@@ -164,65 +174,73 @@ class _ManageStockState extends State<ManageStock> {
                     ),
                   )
                 ),
-              ],
+              ]
+            ),
+            
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: Text(
+                'Kelola Produk',
+                style: TextStyle(
+                  color: AppColors.secondBlack,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
 
-            // "KELOLA STOK PRODUK"
-            SizedBox(height: 5),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Text(
-                    "Kelola Stok Produk",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25
-                    ),
-                  ),
-                )
-              ],
-            ),
-          
-            // MENU
+            // LIST PRODUK
             FutureBuilder(
               future: _futureProduk, 
               builder: (context, snapshot) {
 
+                // jika masih loading
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
 
-                if (!snapshot.hasData || snapshot.data == null || snapshot.data!.isEmpty) {
+                // Jika ada error
+                if (snapshot.hasError) {
                   return Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Text("Tidak ada produk"),
+                    padding: EdgeInsets.all(20),
+                    child: Text("Error: ${snapshot.error}"),
                   );
                 }
 
+                // Jika data kosong
+                if (!snapshot.hasData || snapshot.data == null || snapshot.data!.isEmpty) {
+                  return Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Center(child: Text("Tidak ada produk")),
+                  );
+                }
+
+                // Ambil dan filter data
                 List allProduk = snapshot.data!;
                 List dataProduk = getFilteredProduk(allProduk);
 
+                // Jika hasil filter kosong
                 if (dataProduk.isEmpty) {
                   return Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Text("Tidak ada produk $selectedKategori"),
+                    padding: EdgeInsets.all(20),
+                    child: Center(child: Text("Tidak ada produk $selectedKategori"),),
                   );
                 }
-
+          
+                
                 return ListView.builder(
                   itemCount: dataProduk.length,
                   shrinkWrap: true,
-                  physics:  NeverScrollableScrollPhysics(),
+                  physics: NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(horizontal: 15),
-                  itemBuilder:(context, index) {
+                  itemBuilder: (context, index) {
                     final p = dataProduk[index];
 
+                    // TEMPLATE CARD UI LIST PRODUK
                     return Container(
-                      margin: EdgeInsets.only(bottom: 20),
+                      margin: EdgeInsets.only(bottom: 15),
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: AppColors.secondWhite,
@@ -236,24 +254,35 @@ class _ManageStockState extends State<ManageStock> {
                         ]
                       ),
 
+                      // ISI CARD NYA
                       child: Row(
                         children: [
-
                           // FOTO PRODUK
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  "http://localhost${p['path_gambar']}"
-                                )
-                              )
+                          ClipRRect(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                            child: Image.network(
+                              "http://localhost${p['path_gambar']}",
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+
+                              // KALO GAMBARNYA GAADA, MUNCUL ICON
+                              errorBuilder: (context, error, StackTrace) {
+                                return Container(
+                                  width: 80,
+                                  height: 80,
+                                  color: Colors.grey[300],
+                                  child: Icon(
+                                    Icons.fastfood,
+                                    color: Colors.grey[600],
+                                    size: 40,
+                                  ),
+                                );
+                              },
                             ),
                           ),
 
-                          // NAMA + HARGA
+                          // DETAIL PRODUK
                           SizedBox(width: 12),
                           Expanded(
                             child: Column(
@@ -262,14 +291,16 @@ class _ManageStockState extends State<ManageStock> {
 
                                 // NAMA PRODUK
                                 Text(
-                                  p['nama_produk'] ?? 'Nama tidak Tersedia',
+                                  p['nama_produk'] ?? "Nama Tidak Tersedia",
                                   style: TextStyle(
                                     fontSize: 18,
-                                    fontWeight: FontWeight.bold
+                                    fontWeight: FontWeight.bold,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
 
-                                // HARGA PRODUK
+                                // HARGA
                                 Text(
                                   NumberFormat.currency(
                                     locale: 'id_ID',
@@ -277,46 +308,53 @@ class _ManageStockState extends State<ManageStock> {
                                     decimalDigits: 0,
                                   ).format(p['harga'] ?? 0),
                                   style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+
+                                // DESKRIPSI
+                                SizedBox(height: 4),
+                                Text(
+                                  p['deskripsi'] ?? '',
+                                  style: TextStyle(
+                                    fontSize: 13,
                                     color: Colors.black54,
                                   ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 )
                               ],
                             )
                           ),
 
-                          // TOGLE STATUS PRODUK
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Switch(
-                                value: p['status'] == 'Tersedia',
-                                activeColor: AppColors.secondWhite,
-                                activeTrackColor: AppColors.primaryGreen,
-                                inactiveThumbColor: AppColors.secondWhite,
-                                inactiveTrackColor: Colors.grey,
-
-                                onChanged: (value) async {
-                                  dataProduk[index]['status'] = value ? 'Tersedia' : 'Habis';
-                                  setState(() {});
-                                  await updateStatus(p['id_produk'], value);
-                                },
+                          // TOMBOL EDIT
+                          ElevatedButton(
+                            onPressed: ()  async {
+                              final result = await Navigator.push(
+                                context, 
+                                MaterialPageRoute(builder: (context) => AddEditProductPage(produk: p))
+                              );
+                            }, 
+                            child: Text(
+                              "Edit",
+                              style: TextStyle(
+                                color: AppColors.secondWhite,
+                                fontWeight: FontWeight.bold,
                               ),
-
-                              Text(
-                                p['status'] == 'Tersedia' ? "Tersedia" : "Habis",
-                                style: TextStyle(
-                                  color: p['status'] == 'Tersedia'
-                                  ? AppColors.primaryGreen
-                                  : Colors.grey,
-                                  fontWeight: FontWeight.bold
-                                ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryGreen,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10,
                               )
-                            ],
+                            ),
                           )
                         ],
                       ),
                     );
-                  },
+                  }
                 );
               }
             )
