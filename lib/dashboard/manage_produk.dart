@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:projek_mobile/dashboard/addedit_produk.dart';
+import 'package:projek_mobile/dashboard/addproduct.dart';
+import 'package:projek_mobile/dashboard/editproduct.dart';
 
 
 class manageProduk extends StatefulWidget {
@@ -57,11 +58,11 @@ class _manageProdukState extends State<manageProduk> {
         onPressed: () async {
           final result = await Navigator.push(
             context, 
-            MaterialPageRoute(builder: (context) => AddEditProductPage()),
+            MaterialPageRoute(builder: (context) => Addproduct()),
           );
           if (result == true) {
             setState(() {
-              initState();
+              _futureProduk = fetchProduk();
             });
           }
         },
@@ -333,8 +334,14 @@ class _manageProdukState extends State<manageProduk> {
                             onPressed: ()  async {
                               final result = await Navigator.push(
                                 context, 
-                                MaterialPageRoute(builder: (context) => AddEditProductPage(produk: p))
+                                MaterialPageRoute(builder: (context) => Editproduct())
                               );
+                              
+                              if (result == true) {
+                                setState(() {
+                                  _futureProduk = fetchProduk();
+                                });
+                              }
                             }, 
                             child: Text(
                               "Edit",
