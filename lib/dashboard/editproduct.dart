@@ -1,20 +1,91 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 
 class Editproduct extends StatefulWidget {
-  const Editproduct({super.key});
+  final Map produk;
+
+  Editproduct({required this.produk});
 
   @override
   State<Editproduct> createState() => _EditproductState();
 }
 
 class _EditproductState extends State<Editproduct> {
-  String selectedKategori = "Makanan";
+
+  late TextEditingController nama;
+  late TextEditingController harga;
+  late TextEditingController deskripsi;
+  late String selectedKategori;
+  File? pickedImage;
+
+  // FUNGSI PILIH GAMBAR
+  Future pickImage() async {
+    final img = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (img != null) {
+      setState(() {
+        pickedImage = File(img.path);
+      });
+    }
+  }
+
+  // FUNGSI API UNTUK UPDATE PRODUK
+  Future<bool> updateProduk() async {
+    final uri = Uri.parse("http://localhost/resto/update_produk.php");
+
+    var request = http.MultipartRequest("POST", uri);
+
+    request.fields['id_produk'] = widget.produk['id_produk'].toString();
+    request.fields['nama_produk'] = nama.text;
+    request.fields['harga'] = harga.text;
+    request.fields['deskripsi'] = deskripsi.text;
+    request.fields['kategori'] = selectedKategori;
+
+    if (pickedImage != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'gambar', 
+          pickedImage!.path
+        ),
+      );
+    }
+
+    var response = await request.send();
+    var res = await response.stream.bytesToString();
+    final data = jsonDecode(res);
+
+    return data['success'] == true;
+  }
+
+  // FUNGSI API UNTUK HAPUS PRODUK
+  Future<bool> hapusProduk() async {
+    final response = await http.post(
+      Uri.parse("http://localhost/resto/delete_produk.php"),
+      body: {"id_produk": widget.produk['id_produk'].toString()},
+    );
+
+    final data = jsonDecode(response.body);
+    return data['success'] == true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    nama = TextEditingController(text: widget.produk['nama_produk']);
+    harga = TextEditingController(text: widget.produk['harga'].toString());
+    deskripsi = TextEditingController(text: widget.produk['deskripsi']);
+    selectedKategori = widget.produk['kategori'] ?? "Makanan";
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.secondWhite,
+
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -34,30 +105,32 @@ class _EditproductState extends State<Editproduct> {
           children: [
 
             // GAMBAR UPLOAD
-            Container(
-              height: 200,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Color(0xFFEDEDED),
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                  color: Colors.grey.shade300
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add_photo_alternate,
-                    size: 60,
-                    color: Colors.grey,
+            GestureDetector(
+              onTap: pickImage,
+              child: Container(
+                height: 200,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Color(0xFFEDEDED),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: Colors.grey.shade300
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Tap untuk memilih gambar",
-                    style: TextStyle(color: Colors.grey),
+                  image: pickedImage == null
+                  ? DecorationImage(
+                    image: NetworkImage(
+                      "http://localhost${widget.produk['path_gambar']}"
+                    ),
+                    fit: BoxFit.cover,
                   )
-                ],
+                  : DecorationImage(
+                    image: FileImage(pickedImage!),
+                    fit: BoxFit.cover,
+                  )
+                ),
+                child: pickedImage == null
+                ? null
+                : null,
               ),
             ),
 
@@ -125,8 +198,16 @@ class _EditproductState extends State<Editproduct> {
             // TOMBOL SIMPAN
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                bool success = await updateProduk();
 
+                if (success) {
+                  Navigator.pop(context, true);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Gagal update produk")),
+                  );
+                }
               }, 
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryGreen,
@@ -149,8 +230,12 @@ class _EditproductState extends State<Editproduct> {
             // TOMBOL HAPUS
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                bool deleted = await hapusProduk();
 
+                if (deleted) {
+                  Navigator.pop(context, true);
+                }
               }, 
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,

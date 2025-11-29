@@ -334,7 +334,7 @@ class _manageProdukState extends State<manageProduk> {
                             onPressed: ()  async {
                               final result = await Navigator.push(
                                 context, 
-                                MaterialPageRoute(builder: (context) => Editproduct())
+                                MaterialPageRoute(builder: (context) => Editproduct(produk: p))
                               );
                               
                               if (result == true) {
