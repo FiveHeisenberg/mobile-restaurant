@@ -6,6 +6,7 @@ import 'package:projek_mobile/login/Signin.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:projek_mobile/dashboard/dashboard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Menu extends StatefulWidget {
   final int idKategori;
@@ -31,6 +32,19 @@ class _MenuState extends State<Menu> {
         produk = body['data'];
       });
     }
+  }
+
+  // FUNGSI API TAMBAH PRODUK KE KERANJANG
+  Future<bool> addToCart(int idUser, int idProduk) async {
+    final url = Uri.parse("http://localhost/resto/add_to_cart.php");
+
+    final response = await http.post(url, body: {
+      "id_user": idUser.toString(),
+      "id_produk": idProduk.toString(),
+    });
+
+    var data = jsonDecode(response.body);
+    return data['success'] == true;
   }
 
   @override
@@ -338,8 +352,27 @@ class _MenuState extends State<Menu> {
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(8))
                                   ),
                                   onPressed: produk[index]['status'] == 'Tersedia'
-                                  ? () {
+                                  ? () async {
+                                    final int idProduk = int.parse(produk[index]['id_produk'].toString());
 
+                                    // AMBIL ID USER LOGIN
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    int? idUser = prefs.getInt("id_user");
+
+                                    if (idUser == null) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text("Anda belum Login"))
+                                      );
+                                      return;
+                                    }
+
+                                    bool ok = await addToCart(idUser, idProduk);
+
+                                    if (ok) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text("Ditambahkan ke keranjang"))
+                                      );
+                                    }
                                   }
                                   : null,
                                   child: Center(

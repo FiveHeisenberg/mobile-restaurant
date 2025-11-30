@@ -4,6 +4,8 @@ import 'package:projek_mobile/main.dart';
 import 'package:projek_mobile/var.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 void main() {
   runApp(const LoginPage());
@@ -33,17 +35,25 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     if (response.statusCode == 200) {
+      print("RESPONSE BODY RAW:");
+      print(response.body);
       final data = jsonDecode(response.body);
-      if (data['status'] == 'success') {
-        setState(() {
+        if (data['status'] == 'success') {
+          setState(() {            
           globals.isLogin = true;
           globals.username = data['username'];
-        });
-        Navigator.pushAndRemoveUntil(
-          context, 
-          MaterialPageRoute(builder: (context) => MyHomePage()),
-          (Route<dynamic> Route) => false,
-        );
+          });
+
+          // SIMPAN DATA USER KE SHAREDPREFERENCES
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setInt("id_user", data['id_user']);
+          await prefs.setString("username", data['username']);
+
+          Navigator.pushAndRemoveUntil(
+            context, 
+            MaterialPageRoute(builder: (context) => MyHomePage()),
+            (Route<dynamic> Route) => false,
+          );        
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Username atau Password Salah'))
