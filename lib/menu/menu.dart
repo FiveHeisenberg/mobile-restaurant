@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:projek_mobile/dashboard/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:projek_mobile/menu/cart.dart';
 
 class Menu extends StatefulWidget {
   final int idKategori;
@@ -61,7 +62,10 @@ class _MenuState extends State<Menu> {
       // TOMBOL KERANJANG
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          
+          Navigator.push(
+            context, 
+            MaterialPageRoute(builder: (context) => Cart())
+          );
         },
         child: Icon(
           Icons.shopping_cart,
@@ -355,7 +359,7 @@ class _MenuState extends State<Menu> {
                                   ? () async {
                                     final int idProduk = int.parse(produk[index]['id_produk'].toString());
 
-                                    // AMBIL ID USER LOGIN
+                                    // AMBIL ID USER LOGIN (SHARED PREFERENCE)
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     int? idUser = prefs.getInt("id_user");
 
