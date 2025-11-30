@@ -42,12 +42,13 @@ class _EditproductState extends State<Editproduct> {
     request.fields['nama_produk'] = nama.text;
     request.fields['harga'] = harga.text;
     request.fields['deskripsi'] = deskripsi.text;
-    request.fields['kategori'] = selectedKategori;
+    request.fields['id_kategori'] = selectedKategori;
+    request.fields['path_lama'] = widget.produk['path_gambar'];
 
     if (pickedImage != null) {
       request.files.add(
         await http.MultipartFile.fromPath(
-          'gambar', 
+          'path_gambar', 
           pickedImage!.path
         ),
       );
@@ -78,7 +79,7 @@ class _EditproductState extends State<Editproduct> {
     nama = TextEditingController(text: widget.produk['nama_produk']);
     harga = TextEditingController(text: widget.produk['harga'].toString());
     deskripsi = TextEditingController(text: widget.produk['deskripsi']);
-    selectedKategori = widget.produk['kategori'] ?? "Makanan";
+    selectedKategori = widget.produk['id_kategori'].toString();
   }
 
   @override
@@ -137,6 +138,7 @@ class _EditproductState extends State<Editproduct> {
             // NAMA PRODUK
             SizedBox(height: 25),
             TextField(
+              controller: nama,
               decoration: InputDecoration(
                 labelText: "Nama Produk",
                 filled: true,
@@ -150,6 +152,7 @@ class _EditproductState extends State<Editproduct> {
             // HARGA
             SizedBox(height: 20),
             TextField(
+              controller: harga,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: "Harga",
@@ -171,11 +174,10 @@ class _EditproductState extends State<Editproduct> {
                   borderRadius: BorderRadius.circular(10)
                 )
               ),
-              items: ['Makanan', 'Minuman']
-              .map((kategori) => DropdownMenuItem(
-                value: kategori,
-                child: Text(kategori),
-                )) .toList(),
+              items: [
+                DropdownMenuItem(child: Text("Makanan"), value: '1'),
+                DropdownMenuItem(child: Text("Minuman"), value: '2'),
+              ],
               onChanged: (value) {
                 setState(() {
                   selectedKategori = value!;
@@ -186,6 +188,7 @@ class _EditproductState extends State<Editproduct> {
             // DESKRIPSI
             SizedBox(height: 20),
             TextFormField(
+              controller: deskripsi,
               decoration: InputDecoration(
                 labelText: "Deskripsi",
                 border: OutlineInputBorder(
