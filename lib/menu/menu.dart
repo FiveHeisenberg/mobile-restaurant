@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:projek_mobile/dashboard/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:projek_mobile/menu/cart.dart';
+import 'package:projek_mobile/var.dart';
 
 class Menu extends StatefulWidget {
   final int idKategori;
@@ -62,10 +63,21 @@ class _MenuState extends State<Menu> {
       // TOMBOL KERANJANG
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context, 
-            MaterialPageRoute(builder: (context) => Cart())
-          );
+          if (isLogin == true) {            
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (context) => Cart())
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Silahkan Login Terlebih Dahulu"))
+            );
+
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (context) => LoginPage())
+            );
+          }
         },
         child: Icon(
           Icons.shopping_cart,
@@ -357,25 +369,36 @@ class _MenuState extends State<Menu> {
                                   ),
                                   onPressed: produk[index]['status'] == 'Tersedia'
                                   ? () async {
-                                    final int idProduk = int.parse(produk[index]['id_produk'].toString());
+                                    if (isLogin == true) {
+                                      final int idProduk = int.parse(produk[index]['id_produk'].toString());
 
-                                    // AMBIL ID USER LOGIN (SHARED PREFERENCE)
-                                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    int? idUser = prefs.getInt("id_user");
+                                      // AMBIL ID USER LOGIN (SHARED PREFERENCE)
+                                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      int? idUser = prefs.getInt("id_user");
 
-                                    if (idUser == null) {
+                                      if (idUser == null) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text("Anda belum Login"))
+                                        );
+                                        return;
+                                      }
+
+                                      bool ok = await addToCart(idUser, idProduk);
+
+                                      if (ok) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text("Ditambahkan ke keranjang"))
+                                        );
+                                      }
+                                    } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text("Anda belum Login"))
+                                        SnackBar(content: Text("Silahkan Login Terlebih Dahulu :)"))
                                       );
-                                      return;
-                                    }
-
-                                    bool ok = await addToCart(idUser, idProduk);
-
-                                    if (ok) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text("Ditambahkan ke keranjang"))
+                                      Navigator.push(
+                                        context, 
+                                        MaterialPageRoute(builder: (context) => LoginPage())
                                       );
+
                                     }
                                   }
                                   : null,
