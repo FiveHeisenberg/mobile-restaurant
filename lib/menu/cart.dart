@@ -97,6 +97,53 @@ class _CartState extends State<Cart> {
     }
   }
 
+  // FUNGSI API MEMPERBARUI JUMLAH PRODUK
+  Future<void> updateCartItem(int idCartItem, int newQuantity) async {
+    final url = Uri.parse("http://localhost/resto/update_jumlah.php");
+
+    try {
+      final response = await http.post(
+        url,
+        body: {
+          'id_cart_item': idCartItem.toString(),
+          'jumlah': newQuantity.toString(),
+        }
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          
+          // JIKA ITEM DIHAPUS (JUMLAH <= 0)
+          if (data['deleted'] == true) {
+            // HAPUS ITEM DARI DAFTAR LOKAL
+            setState(() {
+              cartItems.removeWhere((item) => item['id_cart_item'] == idCartItem.toString());
+            });
+          } else {
+            // PERBARUI JUMLAH DI DAFTAR LOKAL
+            setState(() {
+              final index = cartItems.indexWhere((item) => item['id_cart_item'] == idCartItem.toString());
+              if (index != -1) {
+                cartItems[index]['jumlah'] = newQuantity.toString();
+              }
+            });
+          }
+          // SETELAH UPDATE, AMBIL ULANG TOTAL
+          fetchTotal();
+        } else {
+          throw Exception('Gagal memperbarui jumlah');
+        }
+      } else {
+        throw Exception('Reponse server tidak valid');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal update: $e'))
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -118,157 +165,189 @@ class _CartState extends State<Cart> {
           Expanded(
             child: isLoading
             ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: cartItems.length,
-              itemBuilder: (context, index) {
-                final item = cartItems[index];
-                String nama = item['nama_produk'] ?? 'Produk';
-                String harga = NumberFormat.currency(
-                  locale: 'id_ID',
-                  symbol: 'Rp ',
-                  decimalDigits: 0,
-                ).format(int.parse(item['harga']));
-                String jumlah = item['jumlah'] ?? '1';
-
-                // TEMPLATE CARD
-                return Container(
-                  margin: EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: AppColors.secondWhite,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      )
-                    ]
-                  ),
-
-                  child: Padding(
-                    padding: EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        
-                        // GAMBAR PRODUK
-                        Container(
-                          width: 60,
-                          height: 60,
-                          color: Colors.grey[300],
-                        ),
-
-                        // INFORMASI PRODUK
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-
-                              // NAMA PRODUK
-                              Text(
-                                nama,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-
-                              // HARGA
-                              SizedBox(height: 5),
-                              Text(
-                                harga,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
-                              )
-                            ],
-                          )
-                        ),
-
-                        // TOMBOL + DAN -
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-
-                              }, 
-                              icon: Icon(Icons.add),
-                            ),
-                            Text(jumlah),
-                            IconButton(
-                              onPressed: () {
-
-                              }, 
-                              icon: Icon(Icons.remove)
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              }
-            )
-          ),
-
-          // PANEL PEMBAYARAN
-          Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.primaryGreen,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            : cartItems.isEmpty
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Total Payment",
-                      style: TextStyle(fontSize: 16),
+                    Icon(
+                      Icons.shopping_bag_outlined,
+                      size: 60,
+                      color: Colors.grey,
                     ),
-
-                    // TOTAL HARGA
+                    SizedBox(height: 16),
                     Text(
-                      NumberFormat.currency(
-                        locale: 'id_ID',
-                        symbol: 'Rp ',
-                        decimalDigits: 0,
-                      ).format(total),
+                      'Keranjang Kosong',
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold
+                        fontSize: 18,
+                        color: Colors.grey,
                       ),
                     )
                   ],
                 ),
+              )
+              : ListView.builder(
+                padding: EdgeInsets.all(16),
+                itemCount: cartItems.length,
+                itemBuilder: (context, index) {
+                  final item = cartItems[index];
+                  String nama = item['nama_produk'] ?? 'Produk';
+                  String harga = NumberFormat.currency(
+                    locale: 'id_ID',
+                    symbol: 'Rp ',
+                    decimalDigits: 0,
+                  ).format(int.parse(item['harga']));
+                  String jumlah = item['jumlah'] ?? '1';
 
-                // TOMBOL CHECKOUT
-                SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-
-                    }, 
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.secondWhite,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)
-                      )
+                  // TEMPLATE CARD
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.secondWhite,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        )
+                      ]
                     ),
-                    child: Text(
-                      'Checkout',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.secondBlack
+
+                    child: Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          
+                          // GAMBAR PRODUK
+                          Container(
+                            width: 60,
+                            height: 60,
+                            color: Colors.grey[300],
+                          ),
+
+                          // INFORMASI PRODUK
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                                // NAMA PRODUK
+                                Text(
+                                  nama,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+
+                                // HARGA
+                                SizedBox(height: 5),
+                                Text(
+                                  harga,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                )
+                              ],
+                            )
+                          ),
+
+                          // TOMBOL + DAN -
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  int current = int.tryParse(jumlah) ?? 1;
+                                  if (current > 1) {
+                                    updateCartItem(int.parse(item['id_cart_item']), current - 1);
+                                  } else {
+                                    // JIKA JUMLAH = 1, TOMBOL - AKAN KIRIM 0, DAN BACKEND AKAN MENGHAPUS
+                                    updateCartItem(int.parse(item['id_cart_item']), 0);
+                                  }
+                                }, 
+                                icon: Icon(Icons.remove)
+                              ),
+                              Text(jumlah),
+                              IconButton(
+                                onPressed: () {
+                                  int current = int.tryParse(jumlah) ?? 1;
+                                  updateCartItem(int.parse(item['id_cart_item']), current + 1);
+                                }, 
+                                icon: Icon(Icons.add),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
+                  );
+                }
+              )
+          ),
+
+          // PANEL PEMBAYARAN
+          // KALO KERANJANG KOSONG, GA MUNCUL
+          Visibility(
+            visible: !cartItems.isEmpty,
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.primaryGreen,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Total Payment",
+                        style: TextStyle(fontSize: 16),
+                      ),
+
+                      // TOTAL HARGA
+                      Text(
+                        NumberFormat.currency(
+                          locale: 'id_ID',
+                          symbol: 'Rp ',
+                          decimalDigits: 0,
+                        ).format(total),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
-            ),
+
+                  // TOMBOL CHECKOUT
+                  SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.secondWhite,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)
+                        )
+                      ),
+                      child: Text(
+                        'Checkout',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.secondBlack
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
           )
         ],
       ),
