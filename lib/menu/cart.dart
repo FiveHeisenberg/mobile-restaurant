@@ -4,6 +4,7 @@ import 'package:projek_mobile/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:projek_mobile/menu/checkout.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -243,7 +244,7 @@ class _CartState extends State<Cart> {
                                   nama,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: 18,
                                   ),
                                 ),
 
@@ -335,9 +336,10 @@ class _CartState extends State<Cart> {
           Visibility(
             visible: !cartItems.isEmpty,
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
+              height: 120,
               decoration: BoxDecoration(
-                color: AppColors.primaryGreen,
+                color: Color(0xFFF2EFEF),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: Column(
@@ -349,7 +351,7 @@ class _CartState extends State<Cart> {
                         "Total Payment",
                         style: TextStyle(
                           fontSize: 16,
-                          color: AppColors.secondWhite
+                          color: AppColors.secondBlack
                         ),
                       ),
 
@@ -363,7 +365,7 @@ class _CartState extends State<Cart> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.secondWhite,
+                          color: AppColors.secondBlack,
                         ),
                       )
                     ],
@@ -375,19 +377,24 @@ class _CartState extends State<Cart> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(builder: (context) =>   Checkout())
+                        );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.secondWhite,
+                        backgroundColor: AppColors.primaryGreen,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)
-                        )
+                        ),
+                        padding: EdgeInsets.all(17)
                       ),
                       child: Text(
                         'Checkout',
                         style: TextStyle(
                           fontSize: 16,
-                          color: AppColors.secondBlack
+                          color: AppColors.secondWhite,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
