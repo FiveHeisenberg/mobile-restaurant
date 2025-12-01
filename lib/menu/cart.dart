@@ -192,6 +192,7 @@ class _CartState extends State<Cart> {
                 itemBuilder: (context, index) {
                   final item = cartItems[index];
                   String nama = item['nama_produk'] ?? 'Produk';
+                  String pathGambar = item['path_gambar'] ?? '';
                   String harga = NumberFormat.currency(
                     locale: 'id_ID',
                     symbol: 'Rp ',
@@ -201,7 +202,7 @@ class _CartState extends State<Cart> {
 
                   // TEMPLATE CARD
                   return Container(
-                    margin: EdgeInsets.only(bottom: 12),
+                    margin: EdgeInsets.only(bottom: 15),
                     decoration: BoxDecoration(
                       color: AppColors.secondWhite,
                       borderRadius: BorderRadius.circular(12),
@@ -220,10 +221,14 @@ class _CartState extends State<Cart> {
                         children: [
                           
                           // GAMBAR PRODUK
-                          Container(
-                            width: 60,
-                            height: 60,
-                            color: Colors.grey[300],
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              'http://localhost/${pathGambar}',
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            ),
                           ),
 
                           // INFORMASI PRODUK
@@ -255,29 +260,67 @@ class _CartState extends State<Cart> {
                           ),
 
                           // TOMBOL + DAN -
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  int current = int.tryParse(jumlah) ?? 1;
-                                  if (current > 1) {
-                                    updateCartItem(int.parse(item['id_cart_item']), current - 1);
-                                  } else {
-                                    // JIKA JUMLAH = 1, TOMBOL - AKAN KIRIM 0, DAN BACKEND AKAN MENGHAPUS
-                                    updateCartItem(int.parse(item['id_cart_item']), 0);
-                                  }
-                                }, 
-                                icon: Icon(Icons.remove)
-                              ),
-                              Text(jumlah),
-                              IconButton(
-                                onPressed: () {
-                                  int current = int.tryParse(jumlah) ?? 1;
-                                  updateCartItem(int.parse(item['id_cart_item']), current + 1);
-                                }, 
-                                icon: Icon(Icons.add),
-                              ),
-                            ],
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Row(
+                              children: [
+
+                                // TOMBOL -
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.secondWhite,
+                                    borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(30),
+                                    onTap: () {
+                                      int current = int.tryParse(jumlah) ?? 1;
+                                      if (current > 1) {
+                                        updateCartItem(int.parse(item['id_cart_item']), current - 1);
+                                      } else {
+                                        // JIKA JUMLAH = 1, TOMBOL - AKAN KIRIM 0, DAN BACKEND AKAN MENGHAPUS
+                                        updateCartItem(int.parse(item['id_cart_item']), 0);
+                                      }
+                                    }, 
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Icon(Icons.remove),
+                                    )
+                                  ),
+                                ),
+
+                                // ANGKA
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  child: Text(
+                                    jumlah,
+                                    style: TextStyle(fontSize: 18),
+                                  )
+                                ),
+
+                                // TOMBOL +
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.secondWhite,
+                                    borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      int current = int.tryParse(jumlah) ?? 1;
+                                      updateCartItem(int.parse(item['id_cart_item']), current + 1);
+                                    }, 
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Icon(Icons.add),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         ],
                       ),
@@ -304,7 +347,10 @@ class _CartState extends State<Cart> {
                     children: [
                       Text(
                         "Total Payment",
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.secondWhite
+                        ),
                       ),
 
                       // TOTAL HARGA
@@ -316,7 +362,8 @@ class _CartState extends State<Cart> {
                         ).format(total),
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.secondWhite,
                         ),
                       )
                     ],
