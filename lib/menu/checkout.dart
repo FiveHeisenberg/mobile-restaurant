@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:intl/intl.dart';
 
 class Checkout extends StatefulWidget {
-  const Checkout({super.key});
+  final List<dynamic> cartItems;
+  final int total;
+  const Checkout({super.key, required this.cartItems, required this.total});
 
   @override
   State<Checkout> createState() => _CheckoutState();
@@ -177,30 +180,30 @@ class _CheckoutState extends State<Checkout> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("1x Mie Ayam", style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('Rp. 10.00,-')
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("2x Sate Ayam", style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('Rp. 20.00,-')
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("2x Teh Dingin", style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text('Rp. 10.00,-')
-                    ],
-                  ),
-                  SizedBox(height: 8),
+                  ...widget.cartItems[0].map((item) {
+                    String nama = item['nama_produk'] ?? 'Produk';
+                    int jumlah = int.tryParse(item['jumlah']?.toString() ?? '1') ?? 1;
+                    int harga = int.tryParse(item['harga']?.toString() ?? '0') ?? 0;
+                    int totalhargaItem = jumlah * harga;
+
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('${jumlah}x $nama', style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text(
+                              NumberFormat.currency(
+                                locale: 'id_ID',
+                                symbol: 'Rp ',
+                                decimalDigits: 0,
+                              ).format(totalhargaItem)
+                            )
+                          ],
+                        )
+                      ],
+                    );
+                  }).toList(),
                 ],
               ),
             ),
@@ -296,7 +299,13 @@ class _CheckoutState extends State<Checkout> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Subtotal"),
-                      Text("Rp. 45.000")
+                      Text(
+                        NumberFormat.currency(
+                          locale: 'id_ID',
+                          symbol: 'Rp ',
+                          decimalDigits: 0,
+                        ).format(widget.total)
+                      )
                     ],
                   ),  
                   SizedBox(height: 8),
@@ -356,7 +365,9 @@ class _CheckoutState extends State<Checkout> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-
+                    setState(() {
+                    print(widget.cartItems);
+                    });
                   }, 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryGreen,

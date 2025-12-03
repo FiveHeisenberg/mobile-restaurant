@@ -379,7 +379,10 @@ class _CartState extends State<Cart> {
                       onPressed: () {
                         Navigator.push(
                           context, 
-                          MaterialPageRoute(builder: (context) =>   Checkout())
+                          MaterialPageRoute(builder: (context) => Checkout(
+                            cartItems: [cartItems],
+                            total: total,
+                          ))
                         );
                       },
                       style: ElevatedButton.styleFrom(
