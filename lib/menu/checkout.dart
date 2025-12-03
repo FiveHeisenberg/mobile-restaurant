@@ -11,7 +11,15 @@ class Checkout extends StatefulWidget {
 
 class _CheckoutState extends State<Checkout> {
 
-  String selectedMetode = "Bayar Ditempat";
+  String selectedPayment = "Bayar Ditempat";
+  String selectedOrder = "Takeaway";
+
+  // FUNGSI UNTUK MENGUBAH METODE
+  void _selectedMethod(String method){
+    setState(() {
+      selectedOrder = method;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +41,12 @@ class _CheckoutState extends State<Checkout> {
         
                   // DINE IN
                   GestureDetector(
-                    onTap: () {
-        
-                    },
+                    onTap: () => _selectedMethod("Dine In"),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.primaryGreen,
+                        color: selectedOrder == "Dine In"
+                        ? AppColors.primaryGreen
+                        : AppColors.secondWhite,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: AppColors.primaryGreen)
                       ),
@@ -47,12 +55,18 @@ class _CheckoutState extends State<Checkout> {
                         children: [
                           Icon(
                             Icons.restaurant, 
-                            color: AppColors.secondWhite,
+                            color: selectedOrder == "Dine In"
+                            ? AppColors.secondWhite
+                            : AppColors.primaryGreen,
                           ),
                           SizedBox(height: 4),
                           Text(
                             "Dine In",
-                            style: TextStyle(color: AppColors.secondWhite),
+                            style: TextStyle(
+                              color: selectedOrder == "Dine In"
+                              ? AppColors.secondWhite
+                              : AppColors.primaryGreen
+                            ),
                           )
                         ],
                       ),
@@ -61,12 +75,12 @@ class _CheckoutState extends State<Checkout> {
         
                   // TAKEAWAY
                   GestureDetector(
-                    onTap: () {
-
-                    },
+                    onTap: () => _selectedMethod("Takeaway"),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.secondWhite,
+                        color: selectedOrder == "Takeaway"
+                        ? AppColors.primaryGreen
+                        : AppColors.secondWhite,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: AppColors.primaryGreen)
                       ),
@@ -75,12 +89,18 @@ class _CheckoutState extends State<Checkout> {
                         children: [
                           Icon(
                             Icons.local_dining, 
-                            color: AppColors.primaryGreen,
+                            color: selectedOrder == "Takeaway"
+                              ? AppColors.secondWhite
+                              : AppColors.primaryGreen
                           ),
                           SizedBox(height: 4),
                           Text(
                             "Takeaway",
-                            style: TextStyle(color: AppColors.primaryGreen),
+                            style: TextStyle(
+                              color: selectedOrder == "Takeaway"
+                              ? AppColors.secondWhite
+                              : AppColors.primaryGreen
+                            ),
                           )
                         ],
                       ),
@@ -89,12 +109,12 @@ class _CheckoutState extends State<Checkout> {
         
                   // DELIVERY
                   GestureDetector(
-                    onTap: () {
-
-                    },
+                    onTap: () => _selectedMethod("Delivery"),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.secondWhite,
+                        color: selectedOrder == "Delivery"
+                          ? AppColors.primaryGreen
+                          : AppColors.secondWhite,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: AppColors.primaryGreen)
                       ),
@@ -103,12 +123,18 @@ class _CheckoutState extends State<Checkout> {
                         children: [
                           Icon(
                             Icons.motorcycle, 
-                            color: AppColors.primaryGreen,
+                            color: selectedOrder == "Delivery"
+                              ? AppColors.secondWhite
+                              : AppColors.primaryGreen
                           ),
                           SizedBox(height: 4),
                           Text(
                             "Delivery",
-                            style: TextStyle(color: AppColors.primaryGreen),
+                            style: TextStyle(
+                              color: selectedOrder == "Delivery"
+                              ? AppColors.secondWhite
+                              : AppColors.primaryGreen
+                            ),
                           )
                         ],
                       ),
@@ -205,7 +231,7 @@ class _CheckoutState extends State<Checkout> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   padding: EdgeInsets.all(10),
-                  value: selectedMetode,
+                  value: selectedPayment,
                   isExpanded: true,
                   icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
                   items: [
@@ -242,7 +268,7 @@ class _CheckoutState extends State<Checkout> {
                   ], 
                   onChanged: (value) {
                     setState(() {
-                      selectedMetode = value!;
+                      selectedPayment = value!;
                     });
                   }
                 )
@@ -282,14 +308,15 @@ class _CheckoutState extends State<Checkout> {
                     ],
                   ),  
                   SizedBox(height: 8),
-                  Row(
+                  selectedOrder == "Delivery"
+                  ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Biaya Pengiriman"),
                       Text("Rp. 3.000")
                     ],
-                  ),  
-                  SizedBox(height: 8),
+                  )
+                  : SizedBox(),
                 ],
               ),
             ),
