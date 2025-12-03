@@ -16,11 +16,19 @@ class _CheckoutState extends State<Checkout> {
 
   String selectedPayment = "Bayar Ditempat";
   String selectedOrder = "Takeaway";
+  int biayaAdmin = 2000;
+  int biayaKirim = 0;
 
   // FUNGSI UNTUK MENGUBAH METODE
   void _selectedMethod(String method){
     setState(() {
       selectedOrder = method;
+
+      if (selectedOrder == 'Delivery') {
+        biayaKirim = 3000;
+      } else {
+        biayaKirim = 0;
+      }
     });
   }
 
@@ -200,7 +208,8 @@ class _CheckoutState extends State<Checkout> {
                               ).format(totalhargaItem)
                             )
                           ],
-                        )
+                        ),
+                        SizedBox(height: 5),
                       ],
                     );
                   }).toList(),
@@ -313,16 +322,29 @@ class _CheckoutState extends State<Checkout> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Biaya Admin"),
-                      Text("Rp. 2.000")
+                      Text(
+                        NumberFormat.currency(
+                          locale: 'id_ID',
+                          symbol: 'Rp ',
+                          decimalDigits: 0,
+                        ).format(biayaAdmin)
+                      )
                     ],
                   ),  
                   SizedBox(height: 8),
                   selectedOrder == "Delivery"
-                  ? Row(
+                  ? 
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Biaya Pengiriman"),
-                      Text("Rp. 3.000")
+                      Text(
+                        NumberFormat.currency(
+                          locale: 'id_ID',
+                          symbol: 'Rp ',
+                          decimalDigits: 0,
+                        ).format(biayaKirim)
+                      )
                     ],
                   )
                   : SizedBox(),
@@ -350,7 +372,14 @@ class _CheckoutState extends State<Checkout> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Total Payment", style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text("Rp. 50.000", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)
+                      Text(
+                        NumberFormat.currency(
+                          locale: 'id_ID',
+                          symbol: 'Rp ',
+                          decimalDigits: 0
+                        ).format(widget.total + biayaAdmin + biayaKirim),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      )
                     ],
                   )
                 ],
@@ -366,7 +395,7 @@ class _CheckoutState extends State<Checkout> {
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                    print(widget.cartItems);
+
                     });
                   }, 
                   style: ElevatedButton.styleFrom(
