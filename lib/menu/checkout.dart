@@ -4,6 +4,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:projek_mobile/user/manage_order.dart';
 
 class Checkout extends StatefulWidget {
   final List<dynamic> cartItems;
@@ -52,12 +53,112 @@ class _CheckoutState extends State<Checkout> {
         body: jsonEncode(requestBody),
       );
 
+      final responseData = json.decode(response.body);
+
+      if (responseData['status'] == 'success') {
+        showDialog(
+          context: context, 
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: AppColors.primaryGreen,
+                  size: 30,
+                ),
+                SizedBox(width: 10),
+                Text('Berhasil'),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Pesanan anda akan diproses'),
+                SizedBox(height: 10),
+                Text('ID Pembelian: ${responseData['id_pembelian']}'),
+                Text('Total: ${NumberFormat.currency(
+                  locale: 'id_ID',
+                  symbol: 'Rp ',
+                  decimalDigits: 0,
+                ).format(totalPayment)}')
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => ManageOrder()),
+                    (Route<dynamic> route) => false,
+                  );
+                }, 
+                child: Text(
+                  'OK',
+                  style: TextStyle(
+                    color: AppColors.secondWhite
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryGreen,
+                ),
+              )
+            ],
+          )
+        );
+      } else {
+        showDialog(
+          context: context, 
+          builder: (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(
+                  Icons.error,
+                  color: Colors.red,
+                  size: 30,
+                ),
+                SizedBox(width: 10),
+                Text('Gagal'),
+              ],
+            ),
+            content: Text(responseData['message'] ?? 'Terjadi Kesalahan'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }, 
+                child: Text('OK')
+              )
+            ],
+          )
+        );
+      }
 
     } catch (e) {
       showDialog(
         context: context, 
         builder: (context) => AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 30,
+              ),
+              SizedBox(width: 10),
+              Text('Error')
+            ],
+          ),
+          content: Text('Tidak dapat terhubung ke server: $e'),
+          actions: [
+            TextButton(
+              onPressed: () {
 
+              }, 
+              child: Text('OK'),
+            ),
+          ],
         )
       );
     }
