@@ -382,6 +382,7 @@ class _CartState extends State<Cart> {
                           MaterialPageRoute(builder: (context) => Checkout(
                             cartItems: [cartItems],
                             total: total,
+                            idUser: int.parse(userId ?? '0'),
                           ))
                         );
                       },

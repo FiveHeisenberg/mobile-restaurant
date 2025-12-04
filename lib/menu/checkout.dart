@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Checkout extends StatefulWidget {
   final List<dynamic> cartItems;
   final int total;
-  const Checkout({super.key, required this.cartItems, required this.total});
+  final int idUser;
+  const Checkout({super.key, required this.cartItems, required this.total, required this.idUser});
 
   @override
   State<Checkout> createState() => _CheckoutState();
@@ -18,6 +21,47 @@ class _CheckoutState extends State<Checkout> {
   String selectedOrder = "Takeaway";
   int biayaAdmin = 2000;
   int biayaKirim = 0;
+
+  // FUNGSI API CHECKOUT
+  Future<void> checkoutOrder() async {
+    try {
+      final url = Uri.parse('http://localhost/resto/checkout.php');
+
+      final totalPayment = widget.total + biayaAdmin + biayaKirim;
+
+      List<Map<String, dynamic>> formattedcartItems = [];
+      for (var item in widget.cartItems[0]) {
+        formattedcartItems.add({
+          'id_produk': item['id_produk'],
+          'jumlah': int.parse(item['jumlah']?.toString() ?? '1') ?? 1,
+          'harga': int.parse(item['harga']?.toString() ?? '0') ?? 0,
+        });
+      }
+
+      final requestBody = {
+        'id_user': widget.idUser,
+        'cart_items': formattedcartItems,
+        'total_harga': totalPayment,
+        'order_type': selectedOrder,
+        'payment_type': selectedPayment,
+      };
+
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+
+    } catch (e) {
+      showDialog(
+        context: context, 
+        builder: (context) => AlertDialog(
+
+        )
+      );
+    }
+  }
 
   // FUNGSI UNTUK MENGUBAH METODE
   void _selectedMethod(String method){
@@ -393,11 +437,7 @@ class _CheckoutState extends State<Checkout> {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-
-                    });
-                  }, 
+                  onPressed: checkoutOrder,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryGreen,
                     shape: RoundedRectangleBorder(
