@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:projek_mobile/dashboard/manage_produk.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:projek_mobile/var.dart' as globals;
 import 'package:projek_mobile/login/Signin.dart';
@@ -9,6 +10,7 @@ import 'package:projek_mobile/dashboard/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:projek_mobile/menu/cart.dart';
 import 'package:projek_mobile/var.dart';
+import 'package:projek_mobile/user/manage_order.dart';
 
 class Menu extends StatefulWidget {
   final int idKategori;
@@ -146,6 +148,29 @@ class _MenuState extends State<Menu> {
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
                   title: Text(
+                    "Pesanan Anda",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  tileColor: AppColors.secondWhite,
+                  textColor: AppColors.secondBlack,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(12)
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => ManageOrder())
+                    );
+                  },
+                ),
+              ),
+
+              if(globals.isLogin)
+              Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
+                child: ListTile(
+                  title: Text(
                     "Settings",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
@@ -185,7 +210,7 @@ class _MenuState extends State<Menu> {
               ),
               
               if (globals.isLogin == true) 
-              SizedBox(height: 250),
+              SizedBox(height: 200),
               
               if (globals.isLogin == true)
               Padding(

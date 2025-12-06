@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart' as cslider;
 import 'package:projek_mobile/dashboard/dashboard.dart';
 import 'package:projek_mobile/login/SignIn.dart';
+import 'package:projek_mobile/menu/cart.dart';
 import 'package:projek_mobile/menu/menu.dart';
 import 'package:projek_mobile/var.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:projek_mobile/user/manage_order.dart';
 
 void main() {
   runApp(const MyApp());
@@ -181,10 +183,34 @@ class _MyHomePageState extends State<MyHomePage> {
                     borderRadius: BorderRadiusGeometry.circular(12)
                   ),
                   onTap: () {
-
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => Cart())
+                    );
                   },
                 ),
               ),
+              Padding(
+                padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
+                child: ListTile(
+                  title: Text(
+                    "Pesanan Anda",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  tileColor: AppColors.primaryGreen,
+                  textColor: AppColors.secondWhite,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(12)
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ManageOrder())
+                    );
+                  },
+                ),
+              ),
+
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -227,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ) : SizedBox.shrink(), // < --- WIDGET KOSONG
 
-              SizedBox(height: 200),
+              SizedBox(height: 150),
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
