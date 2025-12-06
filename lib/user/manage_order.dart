@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class ManageOrder extends StatefulWidget {
   const ManageOrder({super.key});
@@ -10,6 +14,60 @@ class ManageOrder extends StatefulWidget {
 
 class _ManageOrderState extends State<ManageOrder> {
   int _selectedIndex = 0;
+  int? idUser;
+
+  Future<void> loadUser() async {
+    idUser = await getUser();
+    setState(() {}); // agar rebuild setelah dapat idUser
+  }
+  
+  // FUNGSI AMBI ID USER
+  Future<int?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('id_user');
+  }
+
+  // FUNGSI API AMBIL PESANAN ON PROSES
+  Future<List<dynamic>> getProcess() async {
+    if (idUser == null) {
+      await getUser();
+    }
+
+    final url = Uri.parse('http://localhost/resto/get_order.php?status=On Proses&id_user=$idUser');
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['orders'];
+    } else {
+      throw Exception("Gagal mengambil data");
+    }
+  }
+
+  // FUNGSI API AMBIL PESANAN SELESAI
+  Future<List<dynamic>> getDone() async {
+    if (idUser == null) {
+      await getUser();
+    }
+
+    final url = Uri.parse('http://localhost/resto/get_order.php?status=Done&id_user=$idUser');
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['orders'];
+    } else {
+      throw Exception("Gagal mengambil pesanan Selesai");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,217 +174,281 @@ class _ManageOrderState extends State<ManageOrder> {
 
           // CARD PESANAN
           _selectedIndex == 0
-          ?Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(16),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: Colors.grey)
-                
-                ),
+          ? Expanded(
+            child: FutureBuilder<List<dynamic>>(
+              future: getProcess(), 
+              builder: (context, snapshot) {
 
-                // ISI CARD
-                child: Padding(
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                final orders = snapshot.data ?? [];
+
+                if (orders.isEmpty) {
+                  return Center(child: Text('Tidak ada pesanan'));
+                }
+
+                return ListView.builder(
                   padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                  itemCount: orders.length,
+                  itemBuilder: (context, index) {
+                    final proses = orders[index];
 
-                      // ID PESANAN DAN STATUS PESANAN
-                      Row(
-                        children: [
-
-                          // ID PESANAN
-                          Text(
-                            "ID Pesanan #12345",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          ),
-                          Spacer(),
-
-                          // STATUS PESANAN
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[400],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              "Proses",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 12,
-                              ),
-                            ),
-                          )
-                        ],
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(color: Colors.grey)
+                      
                       ),
-                      SizedBox(height: 16),
+                      // ISI CARD
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
 
-                      // DETAIL PRODUK
-                      Text(
-                        '2 Nasi Goreng, 1 Sate Ayam, 2 Teh Dingin',
-                        style: TextStyle(fontSize: 16),
+                            // ID PESANAN DAN STATUS PESANAN
+                            Row(
+                              children: [
+
+                                // ID PESANAN
+                                Text(
+                                  "ID Pesanan #${proses['id_pembelian']}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                Spacer(),
+
+                                // STATUS PESANAN
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[400],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    "${proses['status']}",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 16),
+
+                            // DETAIL PRODUK
+                            Text(
+                              proses['detail'] ?? '-',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(height: 5),
+
+                            // GARIS PEMBATAS
+                            Divider(),
+                            SizedBox(height: 5),
+
+                            // TOTAL HARGA DAN TOMBOL KONFIRMASI
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Total',
+                                      style: TextStyle(
+                                        fontSize: 16
+                                      ),
+                                    ),
+
+                                    // TOTAL HARGA
+                                    Text(
+                                      NumberFormat.currency(
+                                        locale: 'id_ID',
+                                        symbol: 'Rp ',
+                                        decimalDigits: 0
+                                      ).format(proses['total_harga']),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Spacer(),
+
+                                // TOMBOL KONFIRMASI
+                                ElevatedButton(
+                                  onPressed: (proses['status']) == 'On Proses'
+                                  ? null
+                                  : () {
+
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)
+                                    ),
+                                    backgroundColor: AppColors.primaryGreen,
+                                    foregroundColor: AppColors.secondWhite
+                                  ), 
+                                  child: Text('Konfirmasi'),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      SizedBox(height: 5),
-
-                      // GARIS PEMBATAS
-                      Divider(),
-                      SizedBox(height: 5),
-
-                      // TOTAL HARGA DAN TOMBOL KONFIRMASI
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Total',
-                                style: TextStyle(
-                                  fontSize: 16
-                                ),
-                              ),
-
-                              // TOTAL HARGA
-                              Text(
-                                'Rp. 50.000',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              )
-                            ],
-                          ),
-                          Spacer(),
-
-                          // TOMBOL KONFIRMASI
-                          ElevatedButton(
-                            onPressed: null,
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)
-                              )
-                            ), 
-                            child: Text('Konfirmasi'),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            )
+                    );
+                  },
+                );
+              }
+            ),
           )
           : Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(16),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: Colors.grey)
+            child: FutureBuilder<List<dynamic>>(
+              future: getDone(), 
+              builder: (context, snapshot) {
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  Center(child: CircularProgressIndicator());
+                }
                 
-                ),
+                if (snapshot.hasError) {
+                  return Center(child: Text("Gagal memuat data"));
+                }
 
-                // ISI CARD
-                child: Padding(
+                final orders = snapshot.data ?? [];
+
+                if (orders.isEmpty) {
+                  return Center(child: Text("Belum ada pesanan selesai"));
+                }
+
+                return ListView.builder(
                   padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                  itemCount: orders.length,
+                  itemBuilder: (context, index) {
+                    final done = orders[index];
 
-                      // ID PESANAN DAN STATUS PESANAN
-                      Row(
-                        children: [
-
-                          // ID PESANAN
-                          Text(
-                            "ID Pesanan #12345",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          ),
-                          Spacer(),
-
-                          // STATUS PESANAN
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AppColors.thirdGreen,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              "Selesai",
-                              style: TextStyle(
-                                color: AppColors.primaryGreen,
-                                fontSize: 12,
-                              ),
-                            ),
-                          )
-                        ],
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(color: Colors.grey)
+                      
                       ),
-                      SizedBox(height: 16),
 
-                      // DETAIL PRODUK
-                      Text(
-                        '2 Nasi Goreng, 1 Sate Ayam, 2 Teh Dingin',
-                        style: TextStyle(fontSize: 16),
+                      // ISI CARD
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            // ID PESANAN DAN STATUS PESANAN
+                            Row(
+                              children: [
+
+                                // ID PESANAN
+                                Text(
+                                  "ID Pesanan #${done['id_pembelian']}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                Spacer(),
+
+                                // STATUS PESANAN
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.thirdGreen,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    "Selesai",
+                                    style: TextStyle(
+                                      color: AppColors.primaryGreen,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 16),
+
+                            // DETAIL PRODUK
+                            Text(
+                              '2 Nasi Goreng, 1 Sate Ayam, 2 Teh Dingin',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(height: 5),
+
+                            // GARIS PEMBATAS
+                            Divider(),
+                            SizedBox(height: 5),
+
+                            // TOTAL HARGA DAN TOMBOL
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Total',
+                                      style: TextStyle(
+                                        fontSize: 16
+                                      ),
+                                    ),
+
+                                    // TOTAL HARGA
+                                    Text(
+                                      NumberFormat.currency(
+                                        locale: 'id_ID',
+                                        symbol: 'Rp ',
+                                        decimalDigits: 0
+                                      ).format(done['total_harga']),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Spacer(),
+
+                                // TOMBOL DETAIL
+                                ElevatedButton(
+                                  onPressed: () {
+
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primaryGreen,
+                                    foregroundColor: AppColors.secondWhite,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)
+                                    )
+                                  ), 
+                                  child: Text('Detail'),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      SizedBox(height: 5),
-
-                      // GARIS PEMBATAS
-                      Divider(),
-                      SizedBox(height: 5),
-
-                      // TOTAL HARGA DAN TOMBOL
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Total',
-                                style: TextStyle(
-                                  fontSize: 16
-                                ),
-                              ),
-
-                              // TOTAL HARGA
-                              Text(
-                                'Rp. 50.000',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              )
-                            ],
-                          ),
-                          Spacer(),
-
-                          // TOMBOL DETAIL
-                          ElevatedButton(
-                            onPressed: () {
-
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primaryGreen,
-                              foregroundColor: AppColors.secondWhite,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)
-                              )
-                            ), 
-                            child: Text('Detail'),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            )
+                    );
+                  },
+                );
+              }
+            ),
+            
           ),
         ],
       ),
