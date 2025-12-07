@@ -81,6 +81,27 @@ class _ManageOrderState extends State<ManageOrder> {
     }
   }
 
+  // FUNGSI API KONFIRMASI ORDER
+  Future<void> konfirmasi(int idPembelian) async {
+    final url = Uri.parse(
+      'http://localhost/resto/konfirmasi_order.php?id_pembelian=$idPembelian'
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      if (data['success'] == true) {
+        print("Konfirmasi berhasil");
+      } else {
+        throw Exception('Gagal Konfirmasi Pesanan');
+      }
+    } else {
+      throw Exception('gagal Menghubungi Server');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -333,8 +354,27 @@ class _ManageOrderState extends State<ManageOrder> {
                                 )
                                 : ElevatedButton(
                                   onPressed: (proses['status']) == 'Selesai'
-                                  ? () {
+                                  ? () async {
+                                    await konfirmasi(proses['id_pembelian']);
 
+                                    showDialog(
+                                      context: context, 
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                            "Terima Kasih :)",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          content: Text(
+                                            "Selamat Menikmati :D",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        );
+                                      }
+                                    );
+                                    setState(() {
+                                      
+                                    });
                                   }
                                   : null,
                                   style: ElevatedButton.styleFrom(
