@@ -45,7 +45,7 @@ class _ManageOrderState extends State<ManageOrder> {
     }
   }
 
-  // FUNGSI API AMBIL PESANAN SELESAI
+  // FUNGSI API AMBIL PESANAN DONE
   Future<List<dynamic>> getDone() async {
     if (idUser == null) {
       await getUser();
@@ -60,6 +60,24 @@ class _ManageOrderState extends State<ManageOrder> {
       return data['orders'];
     } else {
       throw Exception("Gagal mengambil pesanan Selesai");
+    }
+  }
+
+  // FUNGSI API AMBIL PESANAN SELESAI (TUNGGU KONFIRMASI)
+  Future<List<dynamic>> getSelesai() async {
+    if (idUser == null) {
+      await getUser();
+    }
+
+    final url = Uri.parse('http://localhost/resto/get_order.php?status=Selesai&id_user=$idUser');
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['orders'];
+    } else {
+      throw Exception('Gagal Mengambil Pesanan');
     }
   }
 
@@ -176,7 +194,10 @@ class _ManageOrderState extends State<ManageOrder> {
           _selectedIndex == 0
           ? Expanded(
             child: FutureBuilder<List<dynamic>>(
-              future: getProcess(), 
+              future: Future.wait([
+                getProcess(),
+                getSelesai()
+              ]),
               builder: (context, snapshot) {
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -187,17 +208,19 @@ class _ManageOrderState extends State<ManageOrder> {
                   return Center(child: CircularProgressIndicator());
                 }
 
-                final orders = snapshot.data ?? [];
+                final prosesOrders = snapshot.data![0];
+                final selesaiOrders = snapshot.data![1];
+                final allOrders = [...prosesOrders, ... selesaiOrders];
 
-                if (orders.isEmpty) {
+                if (allOrders.isEmpty) {
                   return Center(child: Text('Tidak ada pesanan'));
                 }
 
                 return ListView.builder(
                   padding: EdgeInsets.all(16),
-                  itemCount: orders.length,
+                  itemCount: allOrders.length,
                   itemBuilder: (context, index) {
-                    final proses = orders[index];
+                    final proses = allOrders[index];
 
                     return Card(
                       shape: RoundedRectangleBorder(
@@ -230,24 +253,32 @@ class _ManageOrderState extends State<ManageOrder> {
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[400],
+                                    color: proses['status'] == 'On Proses'
+                                    ? Colors.grey[400]
+                                    : AppColors.thirdGreen,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
                                     "${proses['status']}",
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: proses['status'] == 'On Proses'
+                                      ? AppColors.secondBlack
+                                      : AppColors.primaryGreen,
                                       fontSize: 12,
                                     ),
                                   ),
                                 )
                               ],
                             ),
-                            SizedBox(height: 16),
+                            SizedBox(height: 5),
 
                             // DETAIL PRODUK
                             Text(
-                              proses['detail'] ?? '-',
+                              proses['detail'] != null
+                              ? proses['detail']
+                                .map((item) => "${item['qty']} ${item['nama']}")
+                                .join(", ")
+                              : '-',
                               style: TextStyle(fontSize: 16),
                             ),
                             SizedBox(height: 5),
@@ -286,10 +317,9 @@ class _ManageOrderState extends State<ManageOrder> {
                                 Spacer(),
 
                                 // TOMBOL KONFIRMASI
-                                ElevatedButton(
-                                  onPressed: (proses['status']) == 'On Proses'
-                                  ? null
-                                  : () {
+                                proses['id_order_type'] == 3 && proses['status'] == 'On Proses'
+                                ? ElevatedButton(
+                                  onPressed: () {
 
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -299,8 +329,23 @@ class _ManageOrderState extends State<ManageOrder> {
                                     backgroundColor: AppColors.primaryGreen,
                                     foregroundColor: AppColors.secondWhite
                                   ), 
-                                  child: Text('Konfirmasi'),
+                                  child: Text('Lacak Pesanan'),
                                 )
+                                : ElevatedButton(
+                                  onPressed: (proses['status']) == 'Selesai'
+                                  ? () {
+
+                                  }
+                                  : null,
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)
+                                    ),
+                                    backgroundColor: AppColors.primaryGreen,
+                                    foregroundColor: AppColors.secondWhite
+                                  ), 
+                                  child: Text('Konfirmasi'),
+                                ),
                               ],
                             )
                           ],
@@ -318,7 +363,7 @@ class _ManageOrderState extends State<ManageOrder> {
               builder: (context, snapshot) {
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  Center(child: CircularProgressIndicator());
+                  return Center(child: CircularProgressIndicator());
                 }
                 
                 if (snapshot.hasError) {
@@ -382,11 +427,15 @@ class _ManageOrderState extends State<ManageOrder> {
                                 )
                               ],
                             ),
-                            SizedBox(height: 16),
+                            SizedBox(height: 5),
 
                             // DETAIL PRODUK
                             Text(
-                              '2 Nasi Goreng, 1 Sate Ayam, 2 Teh Dingin',
+                              done['detail'] != null
+                              ? done['detail']
+                                .map((item) => "${item['qty']} ${item['nama']}")
+                                .join(", ")
+                              : '-',
                               style: TextStyle(fontSize: 16),
                             ),
                             SizedBox(height: 5),
