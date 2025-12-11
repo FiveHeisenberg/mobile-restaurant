@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:projek_mobile/dashboard/manage_stock.dart';
 import 'package:projek_mobile/dashboard/manage_produk.dart';
+import 'package:projek_mobile/dashboard/manage_order.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -139,7 +140,12 @@ class _DashboardState extends State<Dashboard> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => ManageOrder())
+                    );
+                  },
                   tileColor: AppColors.secondWhite,
                   textColor: AppColors.secondBlack,
                   shape: RoundedRectangleBorder(
