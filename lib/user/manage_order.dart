@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:projek_mobile/user/struk.dart';
 
 class ManageOrder extends StatefulWidget {
   const ManageOrder({super.key});
@@ -516,7 +517,10 @@ class _ManageOrderState extends State<ManageOrder> {
                                 // TOMBOL DETAIL
                                 ElevatedButton(
                                   onPressed: () {
-
+                                    Navigator.push(
+                                      context, 
+                                      MaterialPageRoute(builder: (context) => Struk(idPembelian: done['id_pembelian']))
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primaryGreen,
