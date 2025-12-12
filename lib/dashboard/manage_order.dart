@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:projek_mobile/user/struk.dart';
 
 class ManageOrder extends StatefulWidget {
   const ManageOrder({super.key});
@@ -12,6 +16,24 @@ class _ManageOrderState extends State<ManageOrder> {
   int _selectedIndex = 0;
   String _selectedFilter = 'Semua';
   String _selectedDate = 'Semua';
+
+  // FUNGSI API AMBIL DATA PESANAN ON PROCES
+  Future<List<dynamic>> getOrders(String filter) async {
+    String url = 'http://localhost/resto/get_orderforadmin.php?filter=$filter';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('MASALAH KONEKSI');
+    }
+  }
+
+  // FUNGSI FORMAT TANGGAL
+  String formatTanggal(String tanggal) {
+    DateTime dt = DateTime.parse(tanggal);
+    return DateFormat('dd-MM-yyyy, HH:mm').format(dt);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,9 +219,205 @@ class _ManageOrderState extends State<ManageOrder> {
             ),
 
             // DAFTAR PESANAN
+            Expanded(
+              child: FutureBuilder(
+                future: getOrders(_selectedFilter), 
+                builder:(context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+              
+                  if (snapshot.hasError) {
+                    return Center(child: Text('TERJADI KESALAHAN'));
+                  }
+              
+                  if (!snapshot.hasData) {
+                    return Center(child: Text('TIDAK ADA DATA'));
+                  }
+              
+                  if (snapshot.data!.isEmpty) {
+                    return Center(child: Text('TIDAK ADA PESANAN'));
+                  }
+              
+                  final orders = snapshot.data!;
+              
+                  return ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemCount: orders.length,
+                    itemBuilder: (context, index) {
+                      final order = orders[index];
+              
+                      // TEMPLATE CARD
+                      return Card(
+                        margin: EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+
+                                        // ID PESANAN
+                                        Text(
+                                          'ID Pesanan ${order['id_pembelian']}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16
+                                          ),
+                                        ),
+                                        SizedBox(height: 3),
+
+                                        // TANGGAL PESANAN
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.calendar_today,
+                                              size: 14,
+                                              color: AppColors.primaryGreen,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              formatTanggal(order['tanggal']),
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    )
+                                  ),
+
+                                  Column(
+                                    children: [
+
+                                      // TOTAL HARGA
+                                      Text(
+                                        NumberFormat.currency(
+                                          locale: 'id_ID',
+                                          symbol: 'Rp ',
+                                          decimalDigits: 0
+                                        ).format(order['total_harga']),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+
+                                      // TIPE ORDER
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 8),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.thirdGreen,
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Text(
+                                          order['order_type'],
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: AppColors.primaryGreen,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              // NAMA CUSTOMER
+                              SizedBox(height: 5),
+                              Text(order['customer']),
+
+                              // DAFTAR PRODUK YANG DIPESAN
+                              SizedBox(height: 10),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(5)
+                                ),
+
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: order['products'].map<Widget>((item) {
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(item['nama_produk']),
+                                        SizedBox(height: 5),
+                                        Text("x ${item['jumlah']}")
+                                      ],
+                                    );
+                                  }).toList()
+                                ),
+                              ),
+
+                              SizedBox(height: 15),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context, 
+                                          MaterialPageRoute(builder: (context) => Struk(idPembelian: order['id_pembelian']))
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.primaryGreen,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadiusGeometry.circular(5)
+                                        ),
+                                        foregroundColor: AppColors.secondWhite,
+                                      ), 
+                                      child: Text('Detail')
+                                    )
+                                  ),
+
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          
+                                        });
+                                      }, 
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.primaryGreen,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadiusGeometry.circular(5)
+                                        ),
+                                        foregroundColor: AppColors.secondWhite,
+                                        
+                                      ), 
+                                      child: Text("Selesai")
+                                    )
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            )
           ],
 
-          // JIKA TAB SELESAI DITEKAN
+          // JIKA TAB 'SELESAI' DITEKAN
           if (_selectedIndex == 1) ...[
 
             // TOMBOL - TOMBOL FILTER

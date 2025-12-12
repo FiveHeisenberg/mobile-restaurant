@@ -34,7 +34,7 @@ class _ManageOrderState extends State<ManageOrder> {
       await getUser();
     }
 
-    final url = Uri.parse('http://localhost/resto/get_order.php?status=On Proses&id_user=$idUser');
+    final url = Uri.parse('http://localhost/resto/get_orderforuser.php?status=On Proses&id_user=$idUser');
 
     final response = await http.get(url);
 
@@ -52,7 +52,7 @@ class _ManageOrderState extends State<ManageOrder> {
       await getUser();
     }
 
-    final url = Uri.parse('http://localhost/resto/get_order.php?status=Done&id_user=$idUser');
+    final url = Uri.parse('http://localhost/resto/get_orderforuser.php?status=Done&id_user=$idUser');
 
     final response = await http.get(url);
 
@@ -70,7 +70,7 @@ class _ManageOrderState extends State<ManageOrder> {
       await getUser();
     }
 
-    final url = Uri.parse('http://localhost/resto/get_order.php?status=Selesai&id_user=$idUser');
+    final url = Uri.parse('http://localhost/resto/get_orderforuser.php?status=Selesai&id_user=$idUser');
 
     final response = await http.get(url);
 
