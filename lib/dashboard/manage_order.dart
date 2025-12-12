@@ -16,6 +16,7 @@ class _ManageOrderState extends State<ManageOrder> {
   int _selectedIndex = 0;
   String _selectedFilter = 'Semua';
   String _selectedDate = 'Semua';
+  int _id_pembelian = 0;
 
   // FUNGSI API AMBIL DATA PESANAN ON PROCES
   Future<List<dynamic>> getOrders(String filter) async {
@@ -29,6 +30,14 @@ class _ManageOrderState extends State<ManageOrder> {
     }
   }
 
+  // FUNGSI API UPDATE STATUS ORDER
+  Future getStatusOrders(int id_pembelian) async {
+    String url = 'http://localhost/resto/update_statusorder.php?id_pembelian=$id_pembelian';
+    final response = await http.get(
+      Uri.parse(url)
+    );
+  }
+
   // FUNGSI FORMAT TANGGAL
   String formatTanggal(String tanggal) {
     DateTime dt = DateTime.parse(tanggal);
@@ -40,8 +49,8 @@ class _ManageOrderState extends State<ManageOrder> {
     return Scaffold(
       backgroundColor: AppColors.secondWhite,
       appBar: AppBar(
-         backgroundColor: AppColors.secondWhite,
-         title: Text("Manajemen Pesanan"),
+        backgroundColor: AppColors.secondWhite,
+        title: Text("Manajemen Pesanan"),
       ),
 
       body: Column(
@@ -268,7 +277,7 @@ class _ManageOrderState extends State<ManageOrder> {
 
                                         // ID PESANAN
                                         Text(
-                                          'ID Pesanan ${order['id_pembelian']}',
+                                          'ID Pesanan #${order['id_pembelian']}',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16
@@ -390,7 +399,7 @@ class _ManageOrderState extends State<ManageOrder> {
                                     child: ElevatedButton(
                                       onPressed: () {
                                         setState(() {
-                                          
+                                          getStatusOrders(order['id_pembelian']);
                                         });
                                       }, 
                                       style: ElevatedButton.styleFrom(

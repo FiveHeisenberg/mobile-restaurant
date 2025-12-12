@@ -32,7 +32,7 @@ class _ManageStockState extends State<ManageStock> {
   // FUNGSI API UPDATE STATUS PRODUK
   Future<void> updateStatus(int idProduk, bool tersedia) async {
     final response = await http.post(
-      Uri.parse("http://localhost/resto/update_status.php"),
+      Uri.parse("http://localhost/resto/update_stok.php"),
       body: {
         "id_produk": idProduk.toString(),
         "status": tersedia ? "Tersedia" : "Habis",
