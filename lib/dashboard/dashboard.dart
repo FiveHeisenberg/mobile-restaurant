@@ -52,7 +52,7 @@ class _DashboardState extends State<Dashboard> {
   // FUNGSI API MENGAMBIL TOTAL PENDAPATAN
   Future getIncome() async {
     final response = await http.get(
-      Uri.parse("http://localhost/getIncome.php"),
+      Uri.parse("http://localhost/resto/getIncome.php"),
     );
 
     if (response.statusCode == 200){
@@ -82,6 +82,20 @@ class _DashboardState extends State<Dashboard> {
     await getProdukSoldOut();
     await getIncome();
     await getTotalSold();
+  }
+
+  // FUNGSI API AMBIL 3 PRODUK TERLARIS
+  Future gettop3() async {
+    final response = await http.get(
+      Uri.parse('http://localhost/resto/top3produk.php')
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return json['data'];
+    } else {
+      throw Exception("MASALAH KONEKSI");
+    }
   }
 
   @override
@@ -344,6 +358,113 @@ class _DashboardState extends State<Dashboard> {
                 fontSize: 23,
                 fontWeight: FontWeight.w600
               ),
+            ),
+            SizedBox(height: 15),
+
+            // TOP 3 PRODUK TERLARIS
+            FutureBuilder(
+              future: gettop3(), 
+              builder: (context, snapshot) {
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Container(child: Text("TIDAK ADA DATA"));
+                }
+
+                List top = snapshot.data!;
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: top.length,
+                  itemBuilder:(context, index) {
+                    final top3 = top[index];
+
+                    return Container(
+                      margin:  EdgeInsets.only(bottom: 20),
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondWhite,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 5,
+                            offset: Offset(0, 3)
+                          )
+                        ]
+                      ),
+
+                      child: Row(
+                        children: [
+
+                          // GAMBAR PRODUK
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  'http://localhost${top3['path_gambar']}'
+                                )
+                              )
+                            ),
+                          ),
+
+                          // NAMA + HARGA
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                                // NAMA PRODUK
+                                Text(
+                                  top3['nama_produk'],
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                // HARGA
+                                Text(
+                                  NumberFormat.currency(
+                                    locale: 'id_ID',
+                                    symbol: 'Rp ',
+                                    decimalDigits: 0
+                                  ).format(top3['harga']),
+                                  style: TextStyle(
+                                    color: AppColors.secondBlack
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+
+                          // ANGKA JUMLAH TERJUAL
+                          Column(
+                            children: [
+                              Text(
+                                '${top3['total_terjual']}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15
+                                ),
+                              ),
+                              Text('Terjual')
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }
             )
           ],
         ),
