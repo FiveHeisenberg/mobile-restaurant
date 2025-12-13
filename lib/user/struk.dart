@@ -128,7 +128,7 @@ class _StrukState extends State<Struk> {
 
                   child: Column(
                     children: [
-                      _infoPayment('ID Pembelian', "${struk['id_pembelian']}"),
+                      _infoPayment('ID Pembelian', "#${struk['id_pembelian']}"),
                       SizedBox(height: 10),
                       _infoPayment("Date", "${struk['tanggal']}"),
                       SizedBox(height: 10),

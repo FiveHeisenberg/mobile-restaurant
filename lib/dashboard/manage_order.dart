@@ -30,6 +30,18 @@ class _ManageOrderState extends State<ManageOrder> {
     }
   }
 
+  // FUNGSI API AMBIL DATA PESANAN DONE
+  Future<List<dynamic>> getDoneOrders(String filter) async {
+    String url = 'http://localhost/resto/get_doneorder.php?filter=$filter';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("MASALAH KONEKSI");
+    }
+  }
+
   // FUNGSI API UPDATE STATUS ORDER
   Future getStatusOrders(int id_pembelian) async {
     String url = 'http://localhost/resto/update_statusorder.php?id_pembelian=$id_pembelian';
@@ -483,6 +495,190 @@ class _ManageOrderState extends State<ManageOrder> {
                     SizedBox(width: 10),
                   ],
                 ),
+              ),
+            ),
+
+            // DAFTAR PESANAN YANG TELAH SELESAI
+            Expanded(
+              child: FutureBuilder(
+                future: getDoneOrders(_selectedDate),
+                builder:(context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('TERJADI KESALAH'));
+                  }
+
+                  if(!snapshot.hasData) {
+                    return Center(child: Text("TIDAK ADA DATA"));
+                  }
+
+                  if (snapshot.data!.isEmpty) {
+                    return Center(child: Text("TIDAK ADA PESANAN YANG SELESAI"));
+                  }
+
+                  final orders = snapshot.data!;
+
+                  return ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemCount: orders.length,
+                    itemBuilder:(context, index) {
+                      final done = orders[index];
+
+                      // TEMPLATE CARD
+                      return Card(
+                        margin: EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+
+                                        // ID PESANAN
+                                        Text(
+                                          'ID Pesanan ${done['id_pembelian']}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(height: 3),
+
+                                        // TANGGAL PESANAN
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.calendar_today,
+                                              size: 14,
+                                              color: AppColors.primaryGreen,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              formatTanggal(done['tanggal']),
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey,
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    )
+                                  ),
+
+                                  Column(
+                                    children: [
+
+                                      // TOTAL HARGA
+                                      Text(
+                                        NumberFormat.currency(
+                                          locale: 'id_ID',
+                                          symbol: 'Rp ',
+                                          decimalDigits: 0
+                                        ).format(done['total_harga']),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                          color: AppColors.secondBlack
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+
+                                      // TIPE ORDER
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 8),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.thirdGreen,
+                                          borderRadius: BorderRadius.circular(12)
+                                        ),
+                                        child: Text(
+                                          done['order_type'],
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: AppColors.primaryGreen,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+
+                              // NAMA CUSTOMER
+                              SizedBox(height: 5),
+                              Text(done['customer']),
+
+                              // DAFTAR PRODUK YANG DIPESAN
+                              SizedBox(height: 10),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(5)
+                                ),
+
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: done['products'].map<Widget>((item) {
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(item['nama_produk']),
+                                        SizedBox(height: 5),
+                                        Text('x ${item['jumlah']}')
+                                      ],
+                                    );
+                                  }).toList()
+                                ),
+                              ),
+
+                              SizedBox(height: 15),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context, 
+                                          MaterialPageRoute(builder: (context) => Struk(idPembelian: done['id_pembelian']))
+                                        );
+                                      }, 
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.secondWhite,
+                                        foregroundColor: AppColors.primaryGreen,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          side: BorderSide(
+                                            color: AppColors.primaryGreen,
+                                            width: 1.5
+                                          )
+                                        )
+                                      ),
+                                      child: Text('Detail')
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             )
           ]
