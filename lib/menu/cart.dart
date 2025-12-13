@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:projek_mobile/menu/checkout.dart';
+import 'package:projek_mobile/var.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -34,7 +35,7 @@ class _CartState extends State<Cart> {
 
   // FUNGSI API MENGAMBIL DATA KERANJANG
   Future<void> fetchCart() async {
-    final url = Uri.parse("http://localhost/resto/get_cart.php");
+    final url = Uri.parse("$urlAPI/get_cart.php");
 
     try {
       final response = await http.post(
@@ -72,7 +73,7 @@ class _CartState extends State<Cart> {
   Future<void> fetchTotal() async {
     if (userId == null) return;
 
-    final url = Uri.parse("http://localhost/resto/get_total.php");
+    final url = Uri.parse("$urlAPI/get_total.php");
     try {
       final response = await http.post(
         url,
@@ -100,7 +101,7 @@ class _CartState extends State<Cart> {
 
   // FUNGSI API MEMPERBARUI JUMLAH PRODUK
   Future<void> updateCartItem(int idCartItem, int newQuantity) async {
-    final url = Uri.parse("http://localhost/resto/update_jumlah.php");
+    final url = Uri.parse("$urlAPI/update_jumlah.php");
 
     try {
       final response = await http.post(
@@ -225,7 +226,7 @@ class _CartState extends State<Cart> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Image.network(
-                              'http://localhost/${pathGambar}',
+                              'http://10.0.2.2/${pathGambar}',
                               width: 60,
                               height: 60,
                               fit: BoxFit.cover,
@@ -337,7 +338,7 @@ class _CartState extends State<Cart> {
             visible: !cartItems.isEmpty,
             child: Container(
               padding: EdgeInsets.all(20),
-              height: 120,
+              height: 140,
               decoration: BoxDecoration(
                 color: Color(0xFFF2EFEF),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),

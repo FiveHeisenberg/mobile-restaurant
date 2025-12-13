@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:projek_mobile/user/manage_order.dart';
+import 'package:projek_mobile/var.dart';
 
 class Checkout extends StatefulWidget {
   final List<dynamic> cartItems;
@@ -26,7 +27,7 @@ class _CheckoutState extends State<Checkout> {
   // FUNGSI API CHECKOUT
   Future<void> checkoutOrder() async {
     try {
-      final url = Uri.parse('http://localhost/resto/checkout.php');
+      final url = Uri.parse('$urlAPI/checkout.php');
 
       final totalPayment = widget.total + biayaAdmin + biayaKirim;
 

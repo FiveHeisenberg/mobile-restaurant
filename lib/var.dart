@@ -4,6 +4,8 @@ import 'package:projek_mobile/main.dart';
 bool isLogin = false;
 String username = '';
 
+const String urlAPI = 'http://10.0.2.2/resto';
+
 
 void logout(BuildContext context) {
   isLogin = false;

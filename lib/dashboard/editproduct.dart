@@ -4,6 +4,7 @@ import 'package:projek_mobile/main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:projek_mobile/var.dart';
 
 class Editproduct extends StatefulWidget {
   final Map produk;
@@ -34,7 +35,7 @@ class _EditproductState extends State<Editproduct> {
 
   // FUNGSI API UNTUK UPDATE PRODUK
   Future<bool> updateProduk() async {
-    final uri = Uri.parse("http://localhost/resto/update_produk.php");
+    final uri = Uri.parse("$urlAPI/update_produk.php");
 
     var request = http.MultipartRequest("POST", uri);
 
@@ -64,7 +65,7 @@ class _EditproductState extends State<Editproduct> {
   // FUNGSI API UNTUK HAPUS PRODUK
   Future<bool> hapusProduk() async {
     final response = await http.post(
-      Uri.parse("http://localhost/resto/delete_produk.php"),
+      Uri.parse("$urlAPI/delete_produk.php"),
       body: {"id_produk": widget.produk['id_produk'].toString()},
     );
 
@@ -120,7 +121,7 @@ class _EditproductState extends State<Editproduct> {
                   image: pickedImage == null
                   ? DecorationImage(
                     image: NetworkImage(
-                      "http://localhost${widget.produk['path_gambar']}"
+                      "http://10.0.2.2${widget.produk['path_gambar']}"
                     ),
                     fit: BoxFit.cover,
                   )

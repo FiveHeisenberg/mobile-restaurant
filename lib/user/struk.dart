@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:http/http.dart' as http;
+import 'package:projek_mobile/var.dart';
 
 class Struk extends StatefulWidget {
   final int idPembelian;
@@ -17,7 +18,7 @@ class _StrukState extends State<Struk> {
 
   // FUNGSI API MENGAMBIL DATA STRUK
   Future<Map<String, dynamic>> getStruk(int idPembelian) async {
-    final url = Uri.parse('http://localhost/resto/struk.php?id_pembelian=$idPembelian');
+    final url = Uri.parse('$urlAPI/struk.php?id_pembelian=$idPembelian');
 
     final response = await http.get(url);
 

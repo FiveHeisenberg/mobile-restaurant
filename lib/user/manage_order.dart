@@ -5,6 +5,7 @@ import 'package:projek_mobile/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:projek_mobile/user/struk.dart';
+import 'package:projek_mobile/var.dart';
 
 class ManageOrder extends StatefulWidget {
   const ManageOrder({super.key});
@@ -34,7 +35,7 @@ class _ManageOrderState extends State<ManageOrder> {
       await getUser();
     }
 
-    final url = Uri.parse('http://localhost/resto/get_orderforuser.php?status=On Proses&id_user=$idUser');
+    final url = Uri.parse('$urlAPI/get_orderforuser.php?status=On Proses&id_user=$idUser');
 
     final response = await http.get(url);
 
@@ -52,7 +53,7 @@ class _ManageOrderState extends State<ManageOrder> {
       await getUser();
     }
 
-    final url = Uri.parse('http://localhost/resto/get_orderforuser.php?status=Done&id_user=$idUser');
+    final url = Uri.parse('$urlAPI/get_orderforuser.php?status=Done&id_user=$idUser');
 
     final response = await http.get(url);
 
@@ -70,7 +71,7 @@ class _ManageOrderState extends State<ManageOrder> {
       await getUser();
     }
 
-    final url = Uri.parse('http://localhost/resto/get_orderforuser.php?status=Selesai&id_user=$idUser');
+    final url = Uri.parse('$urlAPI/get_orderforuser.php?status=Selesai&id_user=$idUser');
 
     final response = await http.get(url);
 
@@ -85,7 +86,7 @@ class _ManageOrderState extends State<ManageOrder> {
   // FUNGSI API KONFIRMASI ORDER
   Future<void> konfirmasi(int idPembelian) async {
     final url = Uri.parse(
-      'http://localhost/resto/konfirmasi_order.php?id_pembelian=$idPembelian'
+      '$urlAPI/konfirmasi_order.php?id_pembelian=$idPembelian'
     );
 
     final response = await http.get(url);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:projek_mobile/var.dart';
 
 class ManageStock extends StatefulWidget {
   const ManageStock({super.key});
@@ -18,7 +19,7 @@ class _ManageStockState extends State<ManageStock> {
   // FUNGSI API MENGAMBIL DATA PRODUK
   Future<List> fetchProduk() async {
     final response = await http.get(
-      Uri.parse("http://localhost/resto/menu.php")
+      Uri.parse("$urlAPI/menu.php")
     );
 
     if (response.statusCode == 200) {
@@ -32,7 +33,7 @@ class _ManageStockState extends State<ManageStock> {
   // FUNGSI API UPDATE STATUS PRODUK
   Future<void> updateStatus(int idProduk, bool tersedia) async {
     final response = await http.post(
-      Uri.parse("http://localhost/resto/update_stok.php"),
+      Uri.parse("$urlAPI/update_stok.php"),
       body: {
         "id_produk": idProduk.toString(),
         "status": tersedia ? "Tersedia" : "Habis",
@@ -247,7 +248,7 @@ class _ManageStockState extends State<ManageStock> {
                               borderRadius: BorderRadius.circular(8),
                               image: DecorationImage(
                                 image: NetworkImage(
-                                  "http://localhost${p['path_gambar']}"
+                                  "http://10.0.2.2${p['path_gambar']}"
                                 )
                               )
                             ),

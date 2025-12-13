@@ -27,7 +27,7 @@ class _MenuState extends State<Menu> {
   // FUNGSI API MENGAMBIL PRODUK BERDASARKAN KATEGORI
   Future getProdukByKategori() async {
     final response = await http.get(
-      Uri.parse('http://localhost/resto/menu.php?id_kategori=${widget.idKategori}')
+      Uri.parse('$urlAPI/menu.php?id_kategori=${widget.idKategori}')
     );
 
     if (response.statusCode == 200) {
@@ -40,7 +40,7 @@ class _MenuState extends State<Menu> {
 
   // FUNGSI API TAMBAH PRODUK KE KERANJANG
   Future<bool> addToCart(int idUser, int idProduk) async {
-    final url = Uri.parse("http://localhost/resto/add_to_cart.php");
+    final url = Uri.parse("$urlAPI/add_to_cart.php");
 
     final response = await http.post(url, body: {
       "id_user": idUser.toString(),
@@ -375,7 +375,7 @@ class _MenuState extends State<Menu> {
                                   image: produk[index]['path_gambar'] != null
                                       ? DecorationImage(
                                           image: NetworkImage(
-                                            "http://localhost${produk[index]['path_gambar'].replaceAll('\\', '/')}",
+                                            "http://10.0.2.2${produk[index]['path_gambar'].replaceAll('\\', '/')}",
                                           ),
                                           fit: BoxFit.cover,
                                         )

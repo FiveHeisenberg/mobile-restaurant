@@ -4,6 +4,7 @@ import 'package:projek_mobile/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:projek_mobile/user/struk.dart';
+import 'package:projek_mobile/var.dart';
 
 class ManageOrder extends StatefulWidget {
   const ManageOrder({super.key});
@@ -20,7 +21,7 @@ class _ManageOrderState extends State<ManageOrder> {
 
   // FUNGSI API AMBIL DATA PESANAN ON PROCES
   Future<List<dynamic>> getOrders(String filter) async {
-    String url = 'http://localhost/resto/get_orderforadmin.php?filter=$filter';
+    String url = '$urlAPI/get_orderforadmin.php?filter=$filter';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -32,7 +33,7 @@ class _ManageOrderState extends State<ManageOrder> {
 
   // FUNGSI API AMBIL DATA PESANAN DONE
   Future<List<dynamic>> getDoneOrders(String filter) async {
-    String url = 'http://localhost/resto/get_doneorder.php?filter=$filter';
+    String url = '$urlAPI/get_doneorder.php?filter=$filter';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -44,7 +45,7 @@ class _ManageOrderState extends State<ManageOrder> {
 
   // FUNGSI API UPDATE STATUS ORDER
   Future getStatusOrders(int id_pembelian) async {
-    String url = 'http://localhost/resto/update_statusorder.php?id_pembelian=$id_pembelian';
+    String url = '$urlAPI/update_statusorder.php?id_pembelian=$id_pembelian';
     final response = await http.get(
       Uri.parse(url)
     );

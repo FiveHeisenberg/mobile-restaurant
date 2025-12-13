@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   // FUNGSI API LOGIN
   Future<void> login() async {
     final response = await http.post(
-      Uri.parse('http://localhost/resto/login.php'),
+      Uri.parse('http://10.0.2.2/resto/login.php'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'username': _usernameController.text,
@@ -74,127 +74,129 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: AppColors.secondWhite,
       ),
       
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(30, 100, 30, 30),
-            child: Center(
-              child: Text(
-                "Login",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            )
-          ),
-
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
-            child: TextFormField(
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20)
-                ),
-                labelStyle: TextStyle(
-                  color: AppColors.secondBlack
-                ),
-                prefixIcon: Icon(
-                  Icons.person, 
-                  color: AppColors.secondBlack
-                ),
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-                fillColor: AppColors.thirdGreen,
-                filled: true,
-              ),
-              controller: _usernameController,
-            ),
-          ),
-          
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
-            child: TextFormField(
-              obscureText: _obscureText,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20)
-                ),
-                labelStyle: TextStyle(
-                  color: AppColors.secondBlack
-                ),
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: AppColors.secondBlack,
-                ),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                  }, 
-                  icon: Icon(
-                    _obscureText ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  color: AppColors.secondBlack,
-                ),
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-                fillColor: AppColors.thirdGreen,
-                filled: true,
-              ),
-              controller: _passwordController,
-            ),
-          ),
-
-          // KE REGISTER
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(20, 5, 0, 1),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => SignUp())
-                  );
-              },
-              child: Text(
-                "Belum Punya Akun?",
-                style: TextStyle(
-                  color: AppColors.secondBlack,
-                  decoration: TextDecoration.underline
-                ),
-              ),
-            )
-          ),
-
-          // TOMBOL LOGIN
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(50, 20, 50, 50),
-            child: Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  login();
-                }, 
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(30, 100, 30, 30),
+              child: Center(
                 child: Text(
                   "Login",
                   style: TextStyle(
-                    color: AppColors.secondWhite,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryGreen,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 50,
-                    vertical: 20
-                  )
-                )
               )
             ),
-          ),
-        ],
+        
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  labelStyle: TextStyle(
+                    color: AppColors.secondBlack
+                  ),
+                  prefixIcon: Icon(
+                    Icons.person, 
+                    color: AppColors.secondBlack
+                  ),
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                  fillColor: AppColors.thirdGreen,
+                  filled: true,
+                ),
+                controller: _usernameController,
+              ),
+            ),
+            
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
+              child: TextFormField(
+                obscureText: _obscureText,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  labelStyle: TextStyle(
+                    color: AppColors.secondBlack
+                  ),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: AppColors.secondBlack,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    }, 
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    color: AppColors.secondBlack,
+                  ),
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  fillColor: AppColors.thirdGreen,
+                  filled: true,
+                ),
+                controller: _passwordController,
+              ),
+            ),
+        
+            // KE REGISTER
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20, 5, 0, 1),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => SignUp())
+                    );
+                },
+                child: Text(
+                  "Belum Punya Akun?",
+                  style: TextStyle(
+                    color: AppColors.secondBlack,
+                    decoration: TextDecoration.underline
+                  ),
+                ),
+              )
+            ),
+        
+            // TOMBOL LOGIN
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(50, 20, 50, 50),
+              child: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    login();
+                  }, 
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                      color: AppColors.secondWhite,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryGreen,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 50,
+                      vertical: 20
+                    )
+                  )
+                )
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

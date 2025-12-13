@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projek_mobile/main.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:projek_mobile/var.dart';
 
 void main() {
   runApp(const SignUp());
@@ -42,7 +43,7 @@ class _SignUpState extends State<SignUp> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://localhost/resto/register.php"),
+        Uri.parse("$urlAPI/register.php"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "username": username,
@@ -86,158 +87,160 @@ class _SignUpState extends State<SignUp> {
         backgroundColor: AppColors.secondWhite,
       ),
 
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(30, 50, 30, 30),
-            child: Center(
-              child: Text(
-                "Create Your First Account",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            )
-          ),
-
-          // INPUT USERNAME
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
-            child: TextFormField(
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20)
-                ),
-                labelStyle: TextStyle(
-                  color: AppColors.secondBlack
-                ),
-                prefixIcon: Icon(
-                  Icons.person, 
-                  color: AppColors.secondBlack
-                ),
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-                fillColor: AppColors.thirdGreen,
-                filled: true,
-              ),
-              controller: _usernameController,
-            ),
-          ),
-          
-          // INPUT PASSWORD
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
-            child: TextFormField(
-              obscureText: _obscureText,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20)
-                ),
-                labelStyle: TextStyle(
-                  color: AppColors.secondBlack
-                ),
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: AppColors.secondBlack,
-                ),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                  }, 
-                  icon: Icon(
-                    _obscureText ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  color: AppColors.secondBlack,
-                ),
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-                fillColor: AppColors.thirdGreen,
-                filled: true,
-              ),
-              controller: _passwordController,
-            ),
-          ),
-
-          // INPUT PASSWORD AGAIN
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
-            child: TextFormField(
-              obscureText: _obscureText,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20)
-                ),
-                labelStyle: TextStyle(
-                  color: AppColors.secondBlack
-                ),
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: AppColors.secondBlack,
-                ),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                  }, 
-                  icon: Icon(
-                    _obscureText ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  color: AppColors.secondBlack,
-                ),
-                labelText: 'Confirm Password',
-                border: OutlineInputBorder(),
-                fillColor: AppColors.thirdGreen,
-                filled: true,
-              ),
-              controller: _confirmController,
-            ),
-          ),
-
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(20, 5, 0, 1),
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                "Sudah Punya Akun?",
-                style: TextStyle(
-                  color: AppColors.secondBlack,
-                  decoration: TextDecoration.underline
-                ),
-              ),
-            )
-          ),
-
-          Padding(
-            padding: EdgeInsetsGeometry.fromLTRB(50, 20, 50, 50),
-            child: Center(
-              child: ElevatedButton(
-                onPressed: createAccount, 
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(30, 50, 30, 30),
+              child: Center(
                 child: Text(
-                  "Create Account",
+                  "Create Your First Account",
                   style: TextStyle(
-                    color: AppColors.secondWhite,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryGreen,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 50,
-                    vertical: 20
-                  )
-                )
               )
             ),
-          ),
-        ],
+        
+            // INPUT USERNAME
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  labelStyle: TextStyle(
+                    color: AppColors.secondBlack
+                  ),
+                  prefixIcon: Icon(
+                    Icons.person, 
+                    color: AppColors.secondBlack
+                  ),
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                  fillColor: AppColors.thirdGreen,
+                  filled: true,
+                ),
+                controller: _usernameController,
+              ),
+            ),
+            
+            // INPUT PASSWORD
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
+              child: TextFormField(
+                obscureText: _obscureText,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  labelStyle: TextStyle(
+                    color: AppColors.secondBlack
+                  ),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: AppColors.secondBlack,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    }, 
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    color: AppColors.secondBlack,
+                  ),
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  fillColor: AppColors.thirdGreen,
+                  filled: true,
+                ),
+                controller: _passwordController,
+              ),
+            ),
+        
+            // INPUT PASSWORD AGAIN
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20, 20, 20, 5),
+              child: TextFormField(
+                obscureText: _obscureText,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  labelStyle: TextStyle(
+                    color: AppColors.secondBlack
+                  ),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: AppColors.secondBlack,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    }, 
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    color: AppColors.secondBlack,
+                  ),
+                  labelText: 'Confirm Password',
+                  border: OutlineInputBorder(),
+                  fillColor: AppColors.thirdGreen,
+                  filled: true,
+                ),
+                controller: _confirmController,
+              ),
+            ),
+        
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(20, 5, 0, 1),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Sudah Punya Akun?",
+                  style: TextStyle(
+                    color: AppColors.secondBlack,
+                    decoration: TextDecoration.underline
+                  ),
+                ),
+              )
+            ),
+        
+            Padding(
+              padding: EdgeInsetsGeometry.fromLTRB(50, 20, 50, 50),
+              child: Center(
+                child: ElevatedButton(
+                  onPressed: createAccount, 
+                  child: Text(
+                    "Create Account",
+                    style: TextStyle(
+                      color: AppColors.secondWhite,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryGreen,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 50,
+                      vertical: 20
+                    )
+                  )
+                )
+              ),
+            ),
+          ],
+        ),
       ),
 
     );

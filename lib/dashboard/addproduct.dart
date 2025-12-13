@@ -3,6 +3,7 @@ import 'package:projek_mobile/main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:projek_mobile/var.dart';
 
 class Addproduct extends StatefulWidget {
   const Addproduct({super.key});
@@ -33,7 +34,7 @@ class _AddproductState extends State<Addproduct> {
 
   // FUNGSI API TAMBAH PRODUK
   Future<bool> tambahProduk() async {
-    var url = Uri.parse("http://localhost/resto/add_produk.php");
+    var url = Uri.parse("$urlAPI/add_produk.php");
 
     var request = http.MultipartRequest("POST", url);
 

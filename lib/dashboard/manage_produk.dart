@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:projek_mobile/dashboard/addproduct.dart';
 import 'package:projek_mobile/dashboard/editproduct.dart';
+import 'package:projek_mobile/var.dart';
 
 
 class manageProduk extends StatefulWidget {
@@ -21,7 +22,7 @@ class _manageProdukState extends State<manageProduk> {
   // FUNGSI API MENGAMBIL DATA PRODUK
   Future<List> fetchProduk() async {
     final response = await http.get(
-      Uri.parse("http://localhost/resto/menu.php")
+      Uri.parse("$urlAPI/menu.php")
     );
 
     if (response.statusCode == 200) {
@@ -262,7 +263,7 @@ class _manageProdukState extends State<manageProduk> {
                           ClipRRect(
                             borderRadius: BorderRadiusGeometry.circular(8),
                             child: Image.network(
-                              "http://localhost${p['path_gambar']}",
+                              "http://10.0.2.2${p['path_gambar']}",
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,

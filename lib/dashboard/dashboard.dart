@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:projek_mobile/dashboard/manage_stock.dart';
 import 'package:projek_mobile/dashboard/manage_produk.dart';
 import 'package:projek_mobile/dashboard/manage_order.dart';
+import 'package:projek_mobile/var.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -33,7 +34,7 @@ class _DashboardState extends State<Dashboard> {
   Future<void> getProdukSoldOut() async {
     try {
       final response = await http.get(
-        Uri.parse("http://localhost/resto/menu.php?status=Habis"),
+        Uri.parse("$urlAPI/menu.php?status=Habis"),
       );
 
       if (response.statusCode == 200) {
@@ -52,7 +53,7 @@ class _DashboardState extends State<Dashboard> {
   // FUNGSI API MENGAMBIL TOTAL PENDAPATAN
   Future getIncome() async {
     final response = await http.get(
-      Uri.parse("http://localhost/resto/getIncome.php"),
+      Uri.parse("$urlAPI/getIncome.php"),
     );
 
     if (response.statusCode == 200){
@@ -66,7 +67,7 @@ class _DashboardState extends State<Dashboard> {
   // FUNGSI API MENGAMBIL TOTAL TERJUAL
   Future getTotalSold() async {
     final response = await  http.get(
-      Uri.parse("http://localhost/resto/getTotalSold.php")
+      Uri.parse("$urlAPI/getTotalSold.php")
     );
 
     if (response.statusCode == 200) {
@@ -87,7 +88,7 @@ class _DashboardState extends State<Dashboard> {
   // FUNGSI API AMBIL 3 PRODUK TERLARIS
   Future gettop3() async {
     final response = await http.get(
-      Uri.parse('http://localhost/resto/top3produk.php')
+      Uri.parse('$urlAPI/top3produk.php')
     );
 
     if (response.statusCode == 200) {
@@ -409,7 +410,7 @@ class _DashboardState extends State<Dashboard> {
                               borderRadius: BorderRadius.circular(8),
                               image: DecorationImage(
                                 image: NetworkImage(
-                                  'http://localhost${top3['path_gambar']}'
+                                  'http://10.0.2.2${top3['path_gambar']}'
                                 )
                               )
                             ),
