@@ -81,21 +81,22 @@ class _manageProdukState extends State<manageProduk> {
           children: [
             
             // SEARCH BAR
-            Padding(
-              padding: EdgeInsets.fromLTRB(15, 15, 15, 20),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintStyle: TextStyle(color: AppColors.secondBlack),
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  filled: true,
-                  fillColor: AppColors.thirdGreen,
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.fromLTRB(15, 15, 15, 20),
+            //   child: TextField(
+            //     decoration: InputDecoration(
+            //       hintStyle: TextStyle(color: AppColors.secondBlack),
+            //       prefixIcon: Icon(Icons.search),
+            //       border: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(50),
+            //       ),
+            //       filled: true,
+            //       fillColor: AppColors.thirdGreen,
+            //     ),
+            //   ),
+            // ),
 
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

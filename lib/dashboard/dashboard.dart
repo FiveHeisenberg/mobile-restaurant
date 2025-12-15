@@ -194,26 +194,8 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
 
-              // MANAJEMEN USER
-              Padding(
-                padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                child: ListTile(
-                  title: Text(
-                    "Manajemen User",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onTap: () {},
-                  tileColor: AppColors.secondWhite,
-                  textColor: AppColors.secondBlack,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-
               // LOGOUT
-              SizedBox(height: 200),
+              SizedBox(height: 250),
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                 child: ListTile(

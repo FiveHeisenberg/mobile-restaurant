@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:projek_mobile/menu/cart.dart';
 import 'package:projek_mobile/var.dart';
 import 'package:projek_mobile/user/manage_order.dart';
+import 'package:projek_mobile/search.dart';
 
 class Menu extends StatefulWidget {
   final int idKategori;
@@ -23,6 +24,9 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   final formatter = NumberFormat('#,###', 'id_ID');
   List produk = [];
+  TextEditingController searchController = TextEditingController();
+  bool isNavigate = false;
+
 
   // FUNGSI API MENGAMBIL PRODUK BERDASARKAN KATEGORI
   Future getProdukByKategori() async {
@@ -267,6 +271,17 @@ class _MenuState extends State<Menu> {
           Padding(
             padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: TextField(
+              controller: searchController,
+              onSubmitted: (value) {
+                if (value.isNotEmpty) {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => SearchPage(keyword: value))
+                  ).then((_) {
+                    searchController.clear();
+                  });
+                }
+              },
               decoration: InputDecoration(
                 hintText: widget.idKategori == 1 ? "Nasi Goreng..." : "Teh Dingin...",
                 hintStyle: TextStyle(color: AppColors.secondBlack),

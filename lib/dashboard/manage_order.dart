@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:projek_mobile/dashboard/search_order.dart';
 import 'package:projek_mobile/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -18,6 +19,9 @@ class _ManageOrderState extends State<ManageOrder> {
   String _selectedFilter = 'Semua';
   String _selectedDate = 'Semua';
   int _id_pembelian = 0;
+  TextEditingController searchController = TextEditingController();
+  bool isNavigate = false;
+
 
   // FUNGSI API AMBIL DATA PESANAN ON PROCES
   Future<List<dynamic>> getOrders(String filter) async {
@@ -153,6 +157,17 @@ class _ManageOrderState extends State<ManageOrder> {
           Padding(
             padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: TextField(
+              controller: searchController,
+              onSubmitted: (value) {
+                if (value.isNotEmpty) {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => SearchOrder(keyword: value))
+                  ).then((_) {
+                    searchController.clear();
+                  });
+                }
+              },
               decoration: InputDecoration(
                 hintText: 'ID Pesanan . . .',
                 hintStyle: TextStyle(color: AppColors.secondBlack),
@@ -645,6 +660,7 @@ class _ManageOrderState extends State<ManageOrder> {
                                 ),
                               ),
 
+                              // TOMBOL TOMBOL
                               SizedBox(height: 15),
                               Row(
                                 children: [

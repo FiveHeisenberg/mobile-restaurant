@@ -5,7 +5,6 @@ import 'package:projek_mobile/main.dart';
 import 'package:projek_mobile/var.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:projek_mobile/menu/menu.dart';
 import 'package:projek_mobile/login/SignIn.dart';
 import 'package:projek_mobile/menu/cart.dart';
 
@@ -22,7 +21,7 @@ class _SearchPageState extends State<SearchPage> {
   TextEditingController searchController = TextEditingController();
   bool isNavigate = false;
 
-  // FUNGSI API CAR PRODUK
+  // FUNGSI API CARI PRODUK
   Future searchProduk(String keyword) async {
     String url = "$urlAPI/cari_produk.php?keyword=$keyword";
     final response = await http.get(Uri.parse(url));
@@ -103,6 +102,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
 
+                // TOMBOL KERANJANG
                 Container(
                   margin: EdgeInsets.all(5),
                   decoration: BoxDecoration(

@@ -91,6 +91,32 @@ class _MyHomePageState extends State<MyHomePage> {
 
         actions: [
 
+          // TOMBOL KERANJANG
+          if(isLogin == true)
+          Builder(
+            builder: (context) {
+              return GestureDetector(
+                onTap: () => Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => Cart())
+                ),
+                child: Container(
+                  margin: EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryGreen,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.shopping_cart,
+                    color: AppColors.secondWhite,
+                    size: 20,
+                  ),
+                ),
+              );
+            }
+          ),
+
           // TOMBOL HAMBURGER DRAWER
           if(isLogin == true)
           Builder(
@@ -154,6 +180,8 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               SizedBox(height: 150),
+
+              // PROFILES
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 0, 20, 5),
                 child: ListTile(
@@ -172,27 +200,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               ),
-              Padding(
-                  padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
-                child: ListTile(
-                  title: Text(
-                    "Keranjang",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  tileColor: AppColors.primaryGreen,
-                  textColor: AppColors.secondWhite,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(12)
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context, 
-                      MaterialPageRoute(builder: (context) => Cart())
-                    );
-                  },
-                ),
-              ),
+
+              // PESANAN ANDA
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -214,6 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
 
+              // SETTINGS
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
@@ -233,6 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
 
+              // DASHBOARD
               username == "admin" 
               ? Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
@@ -256,7 +267,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ) : SizedBox.shrink(),
 
-              SizedBox(height: 150),
+              // LOGOUT
+              SizedBox(height: 200),
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(
