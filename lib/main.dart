@@ -8,6 +8,7 @@ import 'package:projek_mobile/var.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:projek_mobile/user/manage_order.dart';
+import 'package:projek_mobile/search.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,6 +44,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String query = '';
   String displayedUsername = username;
+  TextEditingController searchController = TextEditingController();
+  bool isNavigate = false;
 
   // FUNGSI AMBIL USERNAME DARI API
   Future<void> fetchUsername() async {
@@ -251,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   },
                 ),
-              ) : SizedBox.shrink(), // < --- WIDGET KOSONG
+              ) : SizedBox.shrink(),
 
               SizedBox(height: 150),
               Padding(
@@ -292,6 +295,17 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(15, 15, 15, 0),
             child: TextField(
+              controller: searchController,
+              onSubmitted: (value) {
+                if (value.isNotEmpty) {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => SearchPage(keyword: value))
+                  ).then((_) {
+                    searchController.clear();
+                  });
+                }
+              },
               decoration: InputDecoration(
                 hintText: 'Nasi Goreng . . .',
                 hintStyle: TextStyle(color: AppColors.secondBlack),

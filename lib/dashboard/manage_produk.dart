@@ -263,7 +263,7 @@ class _manageProdukState extends State<manageProduk> {
                           ClipRRect(
                             borderRadius: BorderRadiusGeometry.circular(8),
                             child: Image.network(
-                              "http://10.0.2.2${p['path_gambar']}",
+                              "http://10.0.2.2/${p['path_gambar']}",
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,

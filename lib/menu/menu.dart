@@ -338,15 +338,15 @@ class _MenuState extends State<Menu> {
                                 SizedBox(height: 5),
 
                                 // RATING (STATIC)
-                                Row(
-                                  children: List.generate(5, (i) {
-                                    return Icon(
-                                      Icons.star,
-                                      size: 18,
-                                      color: Colors.amber,
-                                    );
-                                  }),
-                                ),
+                                // Row(
+                                //   children: List.generate(5, (i) {
+                                //     return Icon(
+                                //       Icons.star,
+                                //       size: 18,
+                                //       color: Colors.amber,
+                                //     );
+                                //   }),
+                                // ),
                                 SizedBox(height: 6),
 
                                 // DESKRIPSI PRODUK
@@ -375,7 +375,7 @@ class _MenuState extends State<Menu> {
                                   image: produk[index]['path_gambar'] != null
                                       ? DecorationImage(
                                           image: NetworkImage(
-                                            "http://10.0.2.2${produk[index]['path_gambar'].replaceAll('\\', '/')}",
+                                            "http://10.0.2.2/${produk[index]['path_gambar'].replaceAll('\\', '/')}",
                                           ),
                                           fit: BoxFit.cover,
                                         )

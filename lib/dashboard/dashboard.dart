@@ -410,7 +410,7 @@ class _DashboardState extends State<Dashboard> {
                               borderRadius: BorderRadius.circular(8),
                               image: DecorationImage(
                                 image: NetworkImage(
-                                  'http://10.0.2.2${top3['path_gambar']}'
+                                  'http://10.0.2.2/${top3['path_gambar']}'
                                 )
                               )
                             ),

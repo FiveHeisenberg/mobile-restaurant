@@ -248,7 +248,7 @@ class _ManageStockState extends State<ManageStock> {
                               borderRadius: BorderRadius.circular(8),
                               image: DecorationImage(
                                 image: NetworkImage(
-                                  "http://10.0.2.2${p['path_gambar']}"
+                                  "http://10.0.2.2/${p['path_gambar']}"
                                 )
                               )
                             ),
