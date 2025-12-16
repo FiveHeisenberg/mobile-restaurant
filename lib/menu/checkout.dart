@@ -21,7 +21,7 @@ class _CheckoutState extends State<Checkout> {
 
   final TextEditingController _alamatController = TextEditingController();
   String selectedPayment = "Bayar Ditempat";
-  String selectedOrder = "Takeaway";
+  String selectedOrder = "Dine In";
   int biayaAdmin = 2000;
   int biayaKirim = 0;
 
@@ -47,6 +47,9 @@ class _CheckoutState extends State<Checkout> {
         'total_harga': totalPayment,
         'order_type': selectedOrder,
         'payment_type': selectedPayment,
+        'alamat': _alamatController.text.trim().isEmpty
+          ? null
+          : _alamatController.text.trim(),
       };
 
       final response = await http.post(
@@ -370,6 +373,63 @@ class _CheckoutState extends State<Checkout> {
                 ],
               ),
             ),
+
+            // INPUT ALAMAT (JIKA DELIVERY)
+            SizedBox(height: 10),
+            selectedOrder == 'Delivery'
+            ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Alamat",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 12),
+                  child: TextField(
+                    controller: _alamatController,
+                    decoration: InputDecoration(
+                      hintText: "Masukkan Alamat . . .",
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.secondBlack
+                      ),
+                  
+                      // ICON DI KIRI
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(
+                          Icons.location_on,
+                          color: AppColors.primaryGreen,
+                          size: 24,
+                        ),
+                      ),
+                      
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey)
+                      )
+                    ),
+                  ),
+                ),
+              ],
+            )
+            : SizedBox.shrink(),
         
             // "METODE PEMBAYARAN"
             SizedBox(height: 12),
@@ -440,63 +500,6 @@ class _CheckoutState extends State<Checkout> {
                 )
               ),
             ),
-
-            // INPUT ALAMAT (JIKA DELIVERY)
-            SizedBox(height: 10),
-            selectedOrder == 'Delivery'
-            ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Alamat",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 8),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 12),
-                  child: TextField(
-                    controller: _alamatController,
-                    decoration: InputDecoration(
-                      hintText: "Masukkan Alamat . . .",
-                      hintStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.secondBlack
-                      ),
-                  
-                      // ICON DI KIRI
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Icon(
-                          Icons.location_on,
-                          color: AppColors.primaryGreen,
-                          size: 24,
-                        ),
-                      ),
-                      
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.grey)
-                      )
-                    ),
-                  ),
-                ),
-              ],
-            )
-            : SizedBox.shrink(),
 
             // GARIS
             SizedBox(height: 16),
@@ -604,7 +607,17 @@ class _CheckoutState extends State<Checkout> {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: checkoutOrder,
+                  onPressed: () {
+                    if (selectedOrder == "Delivery" &&
+                        _alamatController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Alamat wajib diisi untuk Delivery")),
+                      );
+                      return;
+                    } else {
+                      checkoutOrder();
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryGreen,
                     shape: RoundedRectangleBorder(

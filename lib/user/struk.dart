@@ -136,6 +136,10 @@ class _StrukState extends State<Struk> {
                       _infoPayment('Payment', '${struk['payment_type']}'),
                       SizedBox(height: 10),
                       _infoPayment('Ordey Type', "${struk['order_type']}"),
+                      if (struk['order_type'] == 'Delivery') ...[
+                        SizedBox(height: 10),
+                        _infoPayment('Alamat', '${struk['alamat']}'),
+                      ],
                       SizedBox(height: 10),
                       _infoPayment('Customer Name', '${struk['customer_name']}'),
                     ],

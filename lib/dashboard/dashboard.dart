@@ -335,7 +335,7 @@ class _DashboardState extends State<Dashboard> {
 
             SizedBox(height: 15),
             Text(
-              "Top 3 Produk Terlaris",
+              "Top 5 Produk Terlaris",
               style: TextStyle(
                 color: AppColors.secondBlack,
                 fontSize: 23,
