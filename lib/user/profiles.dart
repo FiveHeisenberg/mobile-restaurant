@@ -46,12 +46,12 @@ class _UserpageState extends State<Userpage> {
     return null;
   }
 
-  
+  // FUNGSI MEMUAT DATA USER
   Future<void> loadUser() async {
     if (widget.id == null) return;
 
     final data = await getUserData(widget.id!);
-    if (data == null) return; // ⬅️ PENTING
+    if (data == null) return;
 
     setState(() {
       userData = data;
@@ -62,6 +62,48 @@ class _UserpageState extends State<Userpage> {
       _usernameController.text = data['username'] ?? '';
     });
   }
+
+  // FUNGSI API UPDATE USER
+  Future<void> updateUser() async {
+    if (widget.id == null) return;
+
+    // validasi password
+    if (_passwordBaruController.text.isNotEmpty &&
+        _passwordBaruController.text != _konfirmasiPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Password tidak sama")),
+      );
+      return;
+    }
+
+    final response = await http.post(
+      Uri.parse('$urlAPI/update_user.php'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "id": widget.id,
+        "username": _usernameController.text,
+        "nama_lengkap": _namaController.text,
+        "no_hp": _hpController.text,
+        "email": _emailController.text,
+        "password": _passwordBaruController.text.isEmpty
+            ? null
+            : _passwordBaruController.text,
+      }),
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (data['status'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Profil berhasil diperbarui")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(data['message'] ?? "Gagal update")),
+      );
+    }
+  }
+
 
 
   @override
@@ -107,7 +149,7 @@ class _UserpageState extends State<Userpage> {
                 )
               ),
               onPressed: () {
-
+                updateUser();
               }, 
               child: Text(
                 'Simpan',
