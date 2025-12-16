@@ -19,6 +19,7 @@ class Checkout extends StatefulWidget {
 
 class _CheckoutState extends State<Checkout> {
 
+  final TextEditingController _alamatController = TextEditingController();
   String selectedPayment = "Bayar Ditempat";
   String selectedOrder = "Takeaway";
   int biayaAdmin = 2000;
@@ -95,14 +96,14 @@ class _CheckoutState extends State<Checkout> {
                     (Route<dynamic> route) => false,
                   );
                 }, 
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryGreen,
+                ),
                 child: Text(
                   'OK',
                   style: TextStyle(
                     color: AppColors.secondWhite
                   ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryGreen,
                 ),
               )
             ],
@@ -177,6 +178,13 @@ class _CheckoutState extends State<Checkout> {
       }
     });
   }
+
+  @override
+  void dispose() {
+    _alamatController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -433,10 +441,67 @@ class _CheckoutState extends State<Checkout> {
               ),
             ),
 
+            // INPUT ALAMAT (JIKA DELIVERY)
+            SizedBox(height: 10),
+            selectedOrder == 'Delivery'
+            ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Alamat",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 12),
+                  child: TextField(
+                    controller: _alamatController,
+                    decoration: InputDecoration(
+                      hintText: "Masukkan Alamat . . .",
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.secondBlack
+                      ),
+                  
+                      // ICON DI KIRI
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(
+                          Icons.location_on,
+                          color: AppColors.primaryGreen,
+                          size: 24,
+                        ),
+                      ),
+                      
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey)
+                      )
+                    ),
+                  ),
+                ),
+              ],
+            )
+            : SizedBox.shrink(),
+
             // GARIS
             SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),  
               child: DottedLine(
                 dashLength: 6,
                 dashGapLength: 4,
