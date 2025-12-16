@@ -7,6 +7,10 @@ import 'package:intl/intl.dart';
 import 'package:projek_mobile/menu/checkout.dart';
 import 'package:projek_mobile/var.dart';
 
+void main() {
+  runApp(const MyApp());
+}
+
 class Cart extends StatefulWidget {
   const Cart({super.key});
 

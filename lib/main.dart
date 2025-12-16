@@ -9,6 +9,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:projek_mobile/user/manage_order.dart';
 import 'package:projek_mobile/search.dart';
+import 'package:projek_mobile/user/profiles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,6 +48,13 @@ class _MyHomePageState extends State<MyHomePage> {
   String displayedUsername = username;
   TextEditingController searchController = TextEditingController();
   bool isNavigate = false;
+
+  // FUNGSI AMBIL ID USER DARI SHAREDPREFERENCE
+  Future<int?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('id_user');
+  }
+
 
   // FUNGSI AMBIL USERNAME DARI API
   Future<void> fetchUsername() async {
@@ -195,8 +204,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadiusGeometry.circular(12)
                   ),
-                  onTap: () {
+                  onTap: () async {
+                    int? id = await getUserId();
 
+                    if (id != null) {                      
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => Userpage(id: id))
+                    );
+                    }
                   },
                 ),
               ),
@@ -219,26 +235,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => ManageOrder())
                     );
-                  },
-                ),
-              ),
-
-              // SETTINGS
-              Padding(
-                padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
-                child: ListTile(
-                  title: Text(
-                    "Settings",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  tileColor: AppColors.primaryGreen,
-                  textColor: AppColors.secondWhite,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(12)
-                  ),
-                  onTap: () {
-
                   },
                 ),
               ),
@@ -268,7 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ) : SizedBox.shrink(),
 
               // LOGOUT
-              SizedBox(height: 200),
+              SizedBox(height: 250),
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(20, 5, 20, 5),
                 child: ListTile(

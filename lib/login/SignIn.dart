@@ -178,6 +178,13 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     login();
                   }, 
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryGreen,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 50,
+                      vertical: 20
+                    )
+                  ),
                   child: Text(
                     "Login",
                     style: TextStyle(
@@ -186,13 +193,6 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 15
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryGreen,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20
-                    )
-                  )
                 )
               ),
             ),
